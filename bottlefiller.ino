@@ -1,55 +1,43 @@
-//-------------------------------------------------------------------------------------
-// HX711_ADC.h
-// Arduino master library for HX711 24-Bit Analog-to-Digital Converter for Weigh Scales
-// Olav Kallhovd sept2017
-// Tested with      : HX711 asian module on channel A and YZC-133 3kg load cell
-// Tested with MCU  : Arduino Nano
-//-------------------------------------------------------------------------------------
-// This is an example sketch on how to use this library
-// Settling time (number of samples) and data filtering can be adjusted in the HX711_ADC.h file
+#include "BottleType.h"
+#include "HX711.h"
 
-# define SAMPLES 64
-#include <HX711_ADC.h>
+const int HX711_DOUT = A1;
+const int HX711_SCK = A0;
+HX711 scale;
 
-//HX711 constructor (dout pin, sck pin)
-HX711_ADC LoadCell(9, 8);
+const unsigned long DEFAULT_BOTTLE_DEVIATION = 100;
 
-long t;
+BottleType bottleTypes[10];
+
+void loadBottles(BottleType bottleTypes[10]) {
+    /* bottleTypes[0] = BottleType(); */
+    strcpy(bottleTypes[0].Name, "Test");
+    bottleTypes[0].MinWeight = 0;
+    bottleTypes[0].MaxWeight = 123;
+    Serial.println("finished loading");
+}
+
+void initLoadCell() {
+  // parameter "gain" is ommited; the default value 128 is used by the library
+  // HX711.DOUT - pin #A1
+  // HX711.PD_SCK - pin #A0
+  scale.begin(HX711_DOUT, HX711_SCK);
+  scale.read_average(20);
+  scale.tare(); // reset the scale to 0
+}
 
 void setup() {
-  Serial.begin(9600);
-  Serial.println("Wait...");
-  LoadCell.begin();
-  long stabilisingtime = 2000; // tare preciscion can be improved by adding a few seconds of stabilising time
-  LoadCell.start(stabilisingtime);
-  LoadCell.setCalFactor(696.0); // user set calibration factor (float)
-  LoadCell.setCalFactor(1.0); // user set calibration factor (float)
-  Serial.println("Startup + tare is complete");
+    Serial.begin(38400);
+    initLoadCell();
+    loadBottles(bottleTypes);
 }
 
 void loop() {
-  //update() should be called at least as often as HX711 sample rate; >10Hz@10SPS, >80Hz@80SPS
-  //longer delay in scetch will reduce effective sample rate (be carefull with delay() in loop)
-  LoadCell.update();
-
-  //get smoothed value from data set + current calibration factor
-  if (millis() > t + 250) {
-    float i = LoadCell.getData();
-    Serial.print("Load_cell output val: ");
-    Serial.println(i);
-    t = millis();
-  }
-
-  //receive from serial terminal
-  if (Serial.available() > 0) {
-    float i;
-    char inByte = Serial.read();
-    if (inByte == 't') LoadCell.tareNoDelay();
-  }
-
-  //check if last tare operation is complete
-  if (LoadCell.getTareStatus() == true) {
-    Serial.println("Tare complete");
-  }
-
+    /* scale.Update(); */
+    Serial.println("--------------------");
+    Serial.println(bottleTypes[0].Name);
+    Serial.println(bottleTypes[0].MinWeight);
+    Serial.println(bottleTypes[0].MaxWeight);
+    Serial.println(scale.read());
+    delay(250);
 }
