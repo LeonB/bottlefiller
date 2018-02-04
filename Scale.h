@@ -1,6 +1,6 @@
 #include <Chrono.h> 
 #include "HX711.h"
-#include "RunningAverage.h"
+#include "RunningMedian.h"
 
 // defaults
 #ifndef DEFAULT_SCALE_MEASUREMENTS_PER_SECOND
@@ -11,7 +11,10 @@ class Scale {
     public:
         Scale();
         Scale(int, int);
-        void Update();
+        bool Update();
+        void Tare();
+        double GetAccurateValue();
+        double GetFastValue();
 
     private:
         // chrone is used for keeping track when measurements have to be taken
@@ -20,5 +23,5 @@ class Scale {
         // hapen
         unsigned short int measurementsPerSecond;
         HX711 loadCell;
-        RunningAverage runningAverage;
+        RunningMedian average;
 };

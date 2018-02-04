@@ -41,6 +41,7 @@
 class RunningMedian
 {
 public:
+  RunningMedian(void);
   explicit RunningMedian(const uint8_t size);  // # elements in the internal buffer
   ~RunningMedian();                            // destructor
 
