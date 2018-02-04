@@ -1,43 +1,61 @@
-#include "BottleType.h"
-#include "HX711.h"
+// set some program constants
+const unsigned short int DEFAULT_SCALE_MEASUREMENTS_PER_SECOND = 10;
+const unsigned int DEFAULT_BOTTLE_DEVIATION = 100;
 
+// pin assignments
 const int HX711_DOUT = A1;
 const int HX711_SCK = A0;
-HX711 scale;
 
-const unsigned long DEFAULT_BOTTLE_DEVIATION = 100;
+#include "BottleType.h"
+#include "Scale.h"
+#include <StopWatch.h>
 
+// declare scale
+Scale scale;
+
+// declare stopwatch for measuring stuff
+StopWatch sw;
+
+// declare list of bottle types
 BottleType bottleTypes[10];
 
+void initSerial() {
+    Serial.begin(9600);
+    while (!Serial) {
+        ; // wait for serial port to connect. Needed for native USB
+    }
+}
+
+void initScale() {
+    Serial.println("initScale");
+    scale = Scale(HX711_DOUT, HX711_SCK);
+}
+
 void loadBottles(BottleType bottleTypes[10]) {
-    /* bottleTypes[0] = BottleType(); */
+    Serial.println("loadBottles");
     strcpy(bottleTypes[0].Name, "Test");
     bottleTypes[0].MinWeight = 0;
     bottleTypes[0].MaxWeight = 123;
-    Serial.println("finished loading");
-}
-
-void initLoadCell() {
-  // parameter "gain" is ommited; the default value 128 is used by the library
-  // HX711.DOUT - pin #A1
-  // HX711.PD_SCK - pin #A0
-  scale.begin(HX711_DOUT, HX711_SCK);
-  scale.read_average(20);
-  scale.tare(); // reset the scale to 0
 }
 
 void setup() {
-    Serial.begin(38400);
-    initLoadCell();
+    initSerial();
+    initScale();
     loadBottles(bottleTypes);
 }
 
 void loop() {
-    /* scale.Update(); */
-    Serial.println("--------------------");
-    Serial.println(bottleTypes[0].Name);
-    Serial.println(bottleTypes[0].MinWeight);
-    Serial.println(bottleTypes[0].MaxWeight);
-    Serial.println(scale.read());
-    delay(250);
+    /* Serial.println("--------------------"); */
+    scale.Update();
+    /* Serial.println(bottleTypes[0].Name); */
+    /* Serial.println(bottleTypes[0].MinWeight); */
+    /* Serial.println(bottleTypes[0].MaxWeight); */
+    /* sw.reset(); */
+    /* sw.start(); */
+    /* /1* Serial.println(scale.read()); *1/ */
+    /* /1* Serial.println(scale.read_average(11)); *1/ */
+    /* sw.stop(); */
+    /* Serial.print("scale.read() took "); */
+    /* Serial.print(sw.elapsed()); */
+    /* Serial.println(" millis"); */
 }
