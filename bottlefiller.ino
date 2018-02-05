@@ -23,32 +23,37 @@ BottleType bottleTypes[10];
 double weight;
 bool weightIsChanging = false;
 
-void initSerial() {
+void initSerial()
+{
     Serial.begin(9600);
     while (!Serial) {
         ; // wait for serial port to connect. Needed for native USB
     }
 }
 
-void initScale() {
+void initScale()
+{
     Serial.println("initScale");
     scale = Scale(HX711_DOUT, HX711_SCK);
 }
 
-void loadBottles(BottleType bottleTypes[10]) {
+void loadBottles(BottleType bottleTypes[10])
+{
     Serial.println("loadBottles");
     strcpy(bottleTypes[0].Name, "Test");
     bottleTypes[0].MinWeight = 0;
     bottleTypes[0].MaxWeight = 123;
 }
 
-void setup() {
+void setup()
+{
     initSerial();
     initScale();
     loadBottles(bottleTypes);
 }
 
-void loop() {
+void loop()
+{
     double newWeight = weight;
     bool newWeightIsChanging = weightIsChanging;
 
