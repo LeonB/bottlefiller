@@ -54,40 +54,59 @@ void setup()
 
 void loop()
 {
-    double newWeight = weight;
-    bool newWeightIsChanging = weightIsChanging;
+    bool updated = scale.Update();
 
-    if (scale.Update()) {
+    if (updated && scale.NewFastEquilibrium()) {
+        Serial.println("New fast equilibrium");
+    }
+
+    if (updated && scale.NewAccurateEquilibrium()) {
+        Serial.println("New accurate equilibrium");
+    }
+
+    /* double newWeight = weight; */
+    /* bool newWeightIsChanging = weightIsChanging; */
+
+    /* if ( && scale.GetWeightIsStableFast()) { */
+        /* if scale.State().Diff(scalesate) { */
+        /* } */
+
+
+        /* if (scale.NewEquilibrium()) { */
+        /*     Serial.println("Stable"); */
+        /* } */
+
+        /* } */
         /* Serial.println("--------------------"); */
-        newWeight = scale.GetFastValue();
-        double weightDiff = abs(newWeight - weight);
-        if (weightDiff > MIN_WEIGHT_DIFF_TO_REGISTER) {
-            newWeightIsChanging = true;
-        } else {
-            newWeightIsChanging = false;
-        }
+        /* newWeight = scale.GetFastValue(); */
+        /* double weightDiff = abs(newWeight - weight); */
+        /* if (weightDiff > MIN_WEIGHT_DIFF_TO_REGISTER) { */
+        /*     newWeightIsChanging = true; */
+        /* } else { */
+        /*     newWeightIsChanging = false; */
+        /* } */
 
         /* if (weightIsChanging == true && newWeightIsChanging == false) { */
         /*     Serial.print("New weight: "); */
         /*     Serial.println(newWeight); */
         /* } */
 
-        if (weightIsChanging == true && newWeightIsChanging == false) {
-        /* if (weightIsChanging != newWeightIsChanging) { */
-            Serial.println("-------------------");
-            Serial.print("weightIsChanging: ");
-            Serial.println(weightIsChanging);
-            Serial.print("newWeightIsChanging: ");
-            Serial.println(newWeightIsChanging);
-            Serial.print("weightDiff: ");
-            Serial.println(weightDiff);
-            Serial.print("newWeight: ");
-            Serial.println(newWeight);
-        }
-    }
+        /* if (weightIsChanging == true && newWeightIsChanging == false) { */
+            /* if (weightIsChanging != newWeightIsChanging) { */
+            /* Serial.println("-------------------"); */
+            /* Serial.print("weightIsChanging: "); */
+            /* Serial.println(weightIsChanging); */
+            /* Serial.print("newWeightIsChanging: "); */
+            /* Serial.println(newWeightIsChanging); */
+            /* Serial.print("weightDiff: "); */
+            /* Serial.println(weightDiff); */
+            /* Serial.print("newWeight: "); */
+            /* Serial.println(newWeight); */
+        /* } */
+    /* } */
 
-    weight = newWeight;
-    weightIsChanging = newWeightIsChanging;
+    /* weight = newWeight; */
+    /* weightIsChanging = newWeightIsChanging; */
     /* Serial.println(bottleTypes[0].Name); */
     /* Serial.println(bottleTypes[0].MinWeight); */
     /* Serial.println(bottleTypes[0].MaxWeight); */

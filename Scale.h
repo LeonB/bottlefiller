@@ -16,6 +16,11 @@ public:
     void Tare();
     double GetAccurateValue();
     double GetFastValue();
+    bool GetWeightIsStableFast();
+    bool GetWeightIsStableAccurate();
+    /* void GetLastThreeValues(double[3]); */
+    bool NewFastEquilibrium();
+    bool NewAccurateEquilibrium();
 
 private:
     // chrone is used for keeping track when measurements have to be taken
@@ -24,5 +29,13 @@ private:
     // hapen
     unsigned short int measurementsPerSecond;
     HX711 loadCell;
-    RunningMedian average;
+    RunningMedian accurateAverage;
+    RunningMedian fastAverage;
+    double weight;
+    bool weightIsStableFast;
+    bool weightIsStableAccurate;
+    bool calculateIfWeightIsStableFast();
+    bool calculateIfWeightIsStableAccurate();
+    bool newFastEquilibrium;
+    bool newAccurateEquilibrium;
 };
