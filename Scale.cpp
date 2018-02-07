@@ -95,7 +95,7 @@ bool Scale::Update()
             this->newAccurateEquilibrium = true;
         } else {
             this->newAccurateEquilibrium = false;
-       }
+        }
 
         return fastUpdated || accurateUpdated;
     }
