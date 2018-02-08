@@ -42,10 +42,6 @@ void Scale::Tare()
         }
     }
 
-    /* Serial.print("Setting offset: "); */
-    /* Serial.println(this->GetAccurateValue()); */
-    /* this->loadCell.set_offset(this->GetAccurateValue()); */
-
     Serial.println("Waiting for readings to stabilise");
     while (!this->GetWeightIsStableAccurate()) {
         bool updated = this->Update();
@@ -54,24 +50,13 @@ void Scale::Tare()
         }
     }
 
+    // readings have stabilised: set new offset
     Serial.println("Readings have stabilised");
-    Serial.print("Setting offset: ");
-    Serial.println(this->GetAccurateValue());
-    this->loadCell.set_offset(this->GetAccurateValue());
+    this->SetOffset(this->GetAccurateValue());
 
     // set initial median as default offset
-    Serial.print("Initial offset: ");
-    Serial.println(this->loadCell.get_offset());
-
-    this->accurateAverage.clear();
-    this->fastAverage.clear();
-
-    while (this->accurateAverage.getCount() < this->accurateAverage.getSize()) {
-        bool updated = this->Update();
-        if (updated) {
-            Serial.println("New reading");
-        }
-    }
+    Serial.print("Initial load cell offset: ");
+    Serial.println(this->GetOffset());
 }
 
 bool Scale::Update()
@@ -270,4 +255,45 @@ double Scale::GetStableWeightFast()
 double Scale::GetStableWeightAccurate()
 {
     return this->stableWeightAccurate;
+}
+
+void Scale::SetOffset(long offset) {
+    long diff = this->GetOffset() - offset;
+    this->loadCell.set_offset(offset);
+
+    // Update averages
+    this->updateFastAverageWithDiff(diff);
+    this->updateAccurateAverageWithDiff(diff);
+}
+
+long Scale::GetOffset() {
+    return this->loadCell.get_offset();
+}
+
+void Scale::updateFastAverageWithDiff(long diff) {
+    float values[this->fastAverage.getCount()];
+
+    // collect old values
+    for (int i = 0; i < this->fastAverage.getCount(); i++) {
+        values[i] = this->fastAverage.getElement(i);
+    }
+
+    // update average with old values + diff
+    for (int i = 0; i < this->fastAverage.getCount(); i++) {
+        this->fastAverage.add(values[i] + diff);
+    }
+}
+
+void Scale::updateAccurateAverageWithDiff(long diff) {
+    float values[this->accurateAverage.getCount()];
+
+    // collect old values
+    for (int i = 0; i < this->accurateAverage.getCount(); i++) {
+        values[i] = this->accurateAverage.getElement(i);
+    }
+
+    // update average with old values + diff
+    for (int i = 0; i < this->accurateAverage.getCount(); i++) {
+        this->accurateAverage.add(values[i] + diff);
+    }
 }

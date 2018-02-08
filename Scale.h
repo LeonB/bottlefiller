@@ -27,6 +27,8 @@ public:
     bool GetWeightIsStableAccurate();
     double GetStableWeightFast();
     double GetStableWeightAccurate();
+    void SetOffset(long);
+    long GetOffset();
 
 private:
     // chrone is used for keeping track when measurements have to be taken
@@ -44,4 +46,6 @@ private:
 
     bool calculateIfWeightIsStableFast();
     bool calculateIfWeightIsStableAccurate();
+    void updateFastAverageWithDiff(long);
+    void updateAccurateAverageWithDiff(long);
 };
