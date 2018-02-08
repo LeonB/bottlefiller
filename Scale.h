@@ -10,6 +10,13 @@
 class Scale
 {
 public:
+    bool NewFastEquilibrium();
+    bool NewAccurateEquilibrium();
+    bool WeightIsRemovedFast();
+    bool WeightIsRemovedAccurate();
+    bool WeightIsPlacedFast();
+    bool WeightIsPlacedAccurate();
+
     Scale();
     Scale(int, int);
     bool Update();
@@ -18,9 +25,8 @@ public:
     double GetFastValue();
     bool GetWeightIsStableFast();
     bool GetWeightIsStableAccurate();
-    /* void GetLastThreeValues(double[3]); */
-    bool NewFastEquilibrium();
-    bool NewAccurateEquilibrium();
+    double GetStableWeightFast();
+    double GetStableWeightAccurate();
 
 private:
     // chrone is used for keeping track when measurements have to be taken
@@ -29,13 +35,13 @@ private:
     // hapen
     unsigned short int measurementsPerSecond;
     HX711 loadCell;
-    RunningMedian accurateAverage;
-    RunningMedian fastAverage;
-    double weight;
-    bool weightIsStableFast;
-    bool weightIsStableAccurate;
+    RunningMedian accurateAverage, fastAverage;
+    bool weightIsStableFast, weightIsStableAccurate;
+    bool newFastEquilibrium, newAccurateEquilibrium;
+    bool weightIsRemovedFast, weightIsRemovedAccurate;
+    bool weightIsPlacedFast, weightIsPlacedAccurate;
+    double stableWeightFast,stableWeightAccurate;
+
     bool calculateIfWeightIsStableFast();
     bool calculateIfWeightIsStableAccurate();
-    bool newFastEquilibrium;
-    bool newAccurateEquilibrium;
 };
