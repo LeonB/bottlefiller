@@ -10,8 +10,8 @@
 class Scale
 {
 public:
-    bool NewFastEquilibrium();
-    bool NewAccurateEquilibrium();
+    bool NewStableWeightFast();
+    bool NewStableWeightAccurate();
     bool WeightIsRemovedFast();
     bool WeightIsRemovedAccurate();
     bool WeightIsPlacedFast();
@@ -39,11 +39,13 @@ private:
     HX711 loadCell;
     RunningMedian accurateAverage, fastAverage;
     bool weightIsStableFast, weightIsStableAccurate;
-    bool newFastEquilibrium, newAccurateEquilibrium;
+    bool newStableWeightFast, newStableWeightAccurate;
     bool weightIsRemovedFast, weightIsRemovedAccurate;
     bool weightIsPlacedFast, weightIsPlacedAccurate;
     double stableWeightFast,stableWeightAccurate;
 
+    bool updateFast();
+    bool updateAccurate();
     bool calculateIfWeightIsStableFast();
     bool calculateIfWeightIsStableAccurate();
     void updateFastAverageWithDiff(long);

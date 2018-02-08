@@ -1,5 +1,5 @@
 class BottleType {
     public:
-    char Name[50];
+    char Name[20];
     unsigned long MinWeight, MaxWeight;
 };

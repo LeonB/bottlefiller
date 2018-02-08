@@ -8,7 +8,7 @@ const int HX711_DOUT = A1;
 const int HX711_SCK = A0;
 
 #include "BottleType.h"
-#include "Scale.h"
+#include "Scale.h"  
 #include <StopWatch.h>
 
 // declare scale
@@ -83,7 +83,7 @@ void loop()
 {
     bool updated = scale.Update();
 
-    if (updated && scale.NewFastEquilibrium()) {
+    if (updated && scale.NewStableWeightFast()) {
         Serial.println("New fast equilibrium");
         Serial.print("New weight: ");
         Serial.println(scale.GetFastValue());
@@ -102,7 +102,7 @@ void loop()
         Serial.println("-------------------------------");
     }
 
-    if (updated && scale.NewAccurateEquilibrium()) {
+    if (updated && scale.NewStableWeightAccurate()) {
         Serial.println("New accurate equilibrium");
         Serial.print("New weight: ");
         Serial.println(scale.GetAccurateValue());
@@ -121,7 +121,7 @@ void loop()
         Serial.println("-------------------------------");
 
         if (scale.WeightIsRemovedAccurate()) {
-            scale.Tare();
+            /* scale.Tare(); */
             Serial.println("-------------------------------");
         }
     }
