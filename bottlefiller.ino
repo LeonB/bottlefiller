@@ -120,10 +120,12 @@ void loop()
 
         Serial.println("-------------------------------");
 
-        if (scale.WeightIsRemovedAccurate()) {
-            /* scale.Tare(); */
-            Serial.println("-------------------------------");
-        }
+        /* if (scale.WeightIsRemovedAccurate()) { */
+        /*     scale.UpdateOffset(scale.GetAccurateValue() * -1); */
+        /*     Serial.print("New offset: "); */
+        /*     Serial.println(scale.GetOffset()); */
+        /*     Serial.println("-------------------------------"); */
+        /* } */
     }
 
     /* double newWeight = weight; */

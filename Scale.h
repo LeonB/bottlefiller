@@ -28,6 +28,7 @@ public:
     double GetStableWeightFast();
     double GetStableWeightAccurate();
     void SetOffset(long);
+    void UpdateOffset(long);
     long GetOffset();
 
 private:
@@ -37,7 +38,9 @@ private:
     // hapen
     unsigned short int measurementsPerSecond;
     HX711 loadCell;
-    RunningMedian accurateAverage, fastAverage;
+    /* RunningMedian accurateAverage, fastAverage; */
+    RunningMedian fastAverage();
+    RunningMedian accurateAverage;
     bool weightIsStableFast, weightIsStableAccurate;
     bool newStableWeightFast, newStableWeightAccurate;
     bool weightIsRemovedFast, weightIsRemovedAccurate;
