@@ -8,8 +8,9 @@ const int HX711_DOUT = A1;
 const int HX711_SCK = A0;
 
 #include "BottleType.h"
-#include "Scale.h"  
-#include <StopWatch.h>
+#include "Scale.h"
+#include "StopWatch.h"
+#include "MemoryFree.h"
 
 // declare scale
 Scale scale;
@@ -81,105 +82,24 @@ BottleType getBottleBasedOnWeight(double weight, BottleType bottleTypes[10]) {
 
 void loop()
 {
-    bool updated = scale.Update();
+    struct Update update = scale.Update();
 
-    if (updated && scale.NewStableWeightFast()) {
+    if (update.StableWeightUpdated) {
         Serial.println("New fast equilibrium");
         Serial.print("New weight: ");
-        Serial.println(scale.GetFastValue());
+        Serial.println(update.StableWeight);
 
-        if (scale.WeightIsRemovedFast()) {
-            Serial.println("Weight is removed (fast)");
-        }
-
-        if (scale.WeightIsPlacedFast()) {
-            Serial.println("Weight is placed (fast)");
-            BottleType bottleType = getBottleBasedOnWeight(scale.GetFastValue(), bottleTypes);
-            Serial.print("Bottle type: ");
-            Serial.println(bottleType.Name);
-        }
-
-        Serial.println("-------------------------------");
-    }
-
-    if (updated && scale.NewStableWeightAccurate()) {
-        Serial.println("New accurate equilibrium");
-        Serial.print("New weight: ");
-        Serial.println(scale.GetAccurateValue());
-
-        if (scale.WeightIsRemovedAccurate()) {
+        if (update.WeightIsRemoved) {
             Serial.println("Weight is removed (accurate)");
         }
 
-        if (scale.WeightIsPlacedAccurate()) {
+        if (update.WeightIsPlaced) {
             Serial.println("Weight is placed (accurate)");
-            BottleType bottleType = getBottleBasedOnWeight(scale.GetAccurateValue(), bottleTypes);
+            BottleType bottleType = getBottleBasedOnWeight(update.Weight, bottleTypes);
             Serial.print("Bottle type: ");
             Serial.println(bottleType.Name);
         }
 
         Serial.println("-------------------------------");
-
-        /* if (scale.WeightIsRemovedAccurate()) { */
-        /*     scale.UpdateOffset(scale.GetAccurateValue() * -1); */
-        /*     Serial.print("New offset: "); */
-        /*     Serial.println(scale.GetOffset()); */
-        /*     Serial.println("-------------------------------"); */
-        /* } */
     }
-
-    /* double newWeight = weight; */
-    /* bool newWeightIsChanging = weightIsChanging; */
-
-    /* if ( && scale.GetWeightIsStableFast()) { */
-    /* if scale.State().Diff(scalesate) { */
-    /* } */
-
-
-    /* if (scale.NewEquilibrium()) { */
-    /*     Serial.println("Stable"); */
-    /* } */
-
-    /* } */
-    /* Serial.println("--------------------"); */
-    /* newWeight = scale.GetFastValue(); */
-    /* double weightDiff = abs(newWeight - weight); */
-    /* if (weightDiff > MIN_WEIGHT_DIFF_TO_REGISTER) { */
-    /*     newWeightIsChanging = true; */
-    /* } else { */
-    /*     newWeightIsChanging = false; */
-    /* } */
-
-    /* if (weightIsChanging == true && newWeightIsChanging == false) { */
-    /*     Serial.print("New weight: "); */
-    /*     Serial.println(newWeight); */
-    /* } */
-
-    /* if (weightIsChanging == true && newWeightIsChanging == false) { */
-    /* if (weightIsChanging != newWeightIsChanging) { */
-    /* Serial.println("-------------------"); */
-    /* Serial.print("weightIsChanging: "); */
-    /* Serial.println(weightIsChanging); */
-    /* Serial.print("newWeightIsChanging: "); */
-    /* Serial.println(newWeightIsChanging); */
-    /* Serial.print("weightDiff: "); */
-    /* Serial.println(weightDiff); */
-    /* Serial.print("newWeight: "); */
-    /* Serial.println(newWeight); */
-    /* } */
-    /* } */
-
-    /* weight = newWeight; */
-    /* weightIsChanging = newWeightIsChanging; */
-    /* Serial.println(bottleTypes[0].Name); */
-    /* Serial.println(bottleTypes[0].MinWeight); */
-    /* Serial.println(bottleTypes[0].MaxWeight); */
-    /* sw.reset(); */
-    /* sw.start(); */
-    /* /1* Serial.println(scale.read()); *1/ */
-    /* /1* Serial.println(scale.read_average(11)); *1/ */
-    /* sw.stop(); */
-    /* Serial.print("scale.read() took "); */
-    /* Serial.print(sw.elapsed()); */
-    /* Serial.println(" millis"); */
 }

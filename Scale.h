@@ -10,23 +10,10 @@
 class Scale
 {
 public:
-    bool NewStableWeightFast();
-    bool NewStableWeightAccurate();
-    bool WeightIsRemovedFast();
-    bool WeightIsRemovedAccurate();
-    bool WeightIsPlacedFast();
-    bool WeightIsPlacedAccurate();
-
     Scale();
     Scale(int, int);
-    bool Update();
+    struct Update Update();
     void Tare();
-    double GetAccurateValue();
-    double GetFastValue();
-    bool GetWeightIsStableFast();
-    bool GetWeightIsStableAccurate();
-    double GetStableWeightFast();
-    double GetStableWeightAccurate();
     void SetOffset(long);
     void UpdateOffset(long);
     long GetOffset();
@@ -38,19 +25,31 @@ private:
     // hapen
     unsigned short int measurementsPerSecond;
     HX711 loadCell;
-    /* RunningMedian accurateAverage, fastAverage; */
     RunningMedian fastAverage();
-    RunningMedian accurateAverage;
-    bool weightIsStableFast, weightIsStableAccurate;
-    bool newStableWeightFast, newStableWeightAccurate;
-    bool weightIsRemovedFast, weightIsRemovedAccurate;
-    bool weightIsPlacedFast, weightIsPlacedAccurate;
+    RunningMedian average;
+    double calculateWeightFast();
+    double calculateWeightAccurate();
+    double weightFast,weightAccurate;
     double stableWeightFast,stableWeightAccurate;
 
-    bool updateFast();
-    bool updateAccurate();
+    struct Update updateFast(struct Update);
+    struct Update updateAccurate(struct Update);
     bool calculateIfWeightIsStableFast();
     bool calculateIfWeightIsStableAccurate();
     void updateFastAverageWithDiff(long);
     void updateAccurateAverageWithDiff(long);
+};
+
+struct Update {
+    double OldWeight;
+    double Weight;
+    double OldStableWeight;
+    double StableWeight;
+    bool WeightIsRemoved;
+    bool WeightIsPlaced;
+    double WeightDiff;
+    bool OldWeightIsStable;
+    bool WeightIsStable;
+    bool StableWeightUpdated;
+    bool AverageWeightUpdated;
 };
