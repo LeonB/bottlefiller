@@ -32,12 +32,14 @@ private:
     double weightFast,weightAccurate;
     double stableWeightFast,stableWeightAccurate;
 
-    struct Update updateFast(struct Update);
-    struct Update updateAccurate(struct Update);
+    struct Update updateStatusFast(struct Update);
+    struct Update updateStatusAccurate(struct Update);
+    struct Update updateStatus(struct Update);
     bool calculateIfWeightIsStableFast();
     bool calculateIfWeightIsStableAccurate();
-    void updateFastAverageWithDiff(long);
-    void updateAccurateAverageWithDiff(long);
+    RunningMedian updateFastAverageWithDiff(long);
+    RunningMedian updateAccurateAverageWithDiff(long);
+    RunningMedian updateAverageWithDiff(RunningMedian, long);
 };
 
 struct Update {

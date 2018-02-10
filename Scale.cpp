@@ -27,23 +27,19 @@ Scale::Scale(int pinDout, int pinSck)
 
 void Scale::Tare()
 {
-    // calculate how many new reading to take to fill average buffer
-    uint8_t readingsToAdd = DEFAULT_SCALE_MEASUREMENTS_PER_SECOND - this->average.getCount();
-    Serial.print("Taking ");
-    Serial.print(readingsToAdd);
-    Serial.println(" new readings");
-
     // reset average
     /* this->fastAverage.clear(); */
     /* this->average.clear(); */
 
     // take enough readings to get a proper median
-    Serial.println("Filling average with samples");
     struct Update update = this->Update();
-    while (this->average.getCount() < this->average.getSize()) {
-        update = this->Update();
-        if (update.AverageWeightUpdated) {
-            Serial.println("New reading");
+    if (this->average.getCount() < this->average.getSize()) {
+        Serial.println("Filling average with samples");
+        while (this->average.getCount() < this->average.getSize()) {
+            update = this->Update();
+            if (update.AverageWeightUpdated) {
+                Serial.println("New reading");
+            }
         }
     }
 
@@ -56,7 +52,8 @@ void Scale::Tare()
     }
 
     // readings have stabilised: set new offset
-    Serial.println("Readings have stabilised");
+    Serial.print("Readings have stabilised at ");
+    Serial.println(update.StableWeight);
     this->SetOffset(update.StableWeight);
 
     // set initial median as default offset
@@ -93,22 +90,31 @@ struct Update Scale::Update()
         this->chrono.restart();
 
         /* struct Update fastUpdated = this->updateFast(update); */
-        struct Update accurateUpdate = this->updateAccurate(update);
+        struct Update updateAccurate = this->updateStatusAccurate(update);
 
-        if (!accurateUpdate.StableWeightUpdated && accurateUpdate.AverageWeightUpdated) {
-            Serial.println("tare()");
-            Serial.println(accurateUpdate.OldWeight);
-            Serial.println(accurateUpdate.Weight);
-            Serial.println("--------------");
-            // @TODO: inifinite loop
+        this->weightAccurate = updateAccurate.Weight;
+        this->stableWeightAccurate = updateAccurate.StableWeight;
+
+        bool smallUpdate = !updateAccurate.WeightIsRemoved && !updateAccurate.WeightIsPlaced;
+        bool newStable = updateAccurate.WeightIsStable && !updateAccurate.OldWeightIsStable;
+
+        /* Serial.print("fastUpdate: "); */
+        /* Serial.println(fastUpdate); */
+        /* Serial.print("newStable: "); */
+        /* Serial.println(newStable); */
+
+        if (updateAccurate.WeightIsRemoved && newStable) {
+            /* Serial.println("tare()"); */
             /* this->Tare(); */
         }
 
-        this->weightAccurate = accurateUpdate.Weight;
-        this->stableWeightAccurate = accurateUpdate.StableWeight;
+        /* if (smallUpdate && newStable) { */
+        /*     Serial.println("tare()"); */
+        /*     this->Tare(); */
+        /* } */
 
-        return accurateUpdate;
-        /* return fastUpdated.AverageUpdated || accurateUpdated.AverageUpdated; */
+        return updateAccurate;
+        /* return fastUpdated.AverageUpdated || updateAccurated.AverageUpdated; */
     }
 
     return update;
@@ -154,7 +160,7 @@ struct Update Scale::Update()
 /*     return update; */
 /* } */
 
-struct Update Scale::updateAccurate(struct Update update)
+struct Update Scale::updateStatusAccurate(struct Update update)
 {
     // get new weight
     update.Weight = this->calculateWeightAccurate();
@@ -162,11 +168,23 @@ struct Update Scale::updateAccurate(struct Update update)
     // calculate if weight is stable
     update.WeightIsStable = this->calculateIfWeightIsStableAccurate();
 
+    return this->updateStatus(update);
+}
+
+struct Update Scale::updateStatus(struct Update update)
+{
+    // Keep this clean of this->... calls
+
     if (update.Weight != update.OldWeight) {
         update.AverageWeightUpdated = true;
     }
 
     if (update.OldWeightIsStable == false && update.WeightIsStable == true) {
+        Serial.print("update.OldStableWeight: ");
+        Serial.println(update.OldStableWeight);
+        Serial.print("update.Weight: ");
+        Serial.println(update.Weight);
+
         update.WeightDiff = update.OldStableWeight - update.Weight;
 
         Serial.print("update.WeightDiff: ");
@@ -291,25 +309,57 @@ bool Scale::calculateIfWeightIsStableAccurate()
 /*     return this->stableWeightAccurate; */
 /* } */
 
-void Scale::SetOffset(long offset) {
-    long diff = offset - this->GetOffset();
-    this->UpdateOffset(diff);
+void Scale::SetOffset(long stableWeight) {
+    // oldOffset = -100
+    // stableWeight = 20
+    // diff = 20
+    // newOffset = -80
+    //
+    // oldOffset = 80
+    // stableWeight = 0
+    // diff = 0
+    // newOffset = 80
+
+    // oldOffset = 80
+    // stableWeight = 60
+    // diff = -60
+    // newOffset = 140
+    this->UpdateOffset(stableWeight);
 }
 
 void Scale::UpdateOffset(long diff) {
-    Serial.print("UpdateOffset: ");
+    long oldOffset = this->GetOffset();
+    long newOffset = oldOffset + diff;
+    this->loadCell.set_offset(newOffset);
+
+    Serial.println("--------------------");
+    Serial.print("oldOffset: ");
+    Serial.println(oldOffset);
+    Serial.print("newOffset: ");
+    Serial.println(this->GetOffset());
+    Serial.print("diff: ");
     Serial.println(diff);
 
-    long offset = this->GetOffset() + diff;
-    this->loadCell.set_offset(offset);
+    Serial.print("old this->weightAccurate: ");
+    Serial.println(this->weightAccurate);
+    Serial.print("old this->calculateWeightAccurate(): ");
+    Serial.println(this->calculateWeightAccurate());
 
     // Update averages
     /* this->updateFastAverageWithDiff(diff); */
     this->updateAccurateAverageWithDiff(diff);
 
     // Update values
-    this->stableWeightFast -= diff;
+    this->weightAccurate -= diff;
     this->stableWeightAccurate -= diff;
+    this->weightFast -= diff;
+    this->stableWeightFast -= diff;
+
+    Serial.print("new this->weightAccurate: ");
+    Serial.println(this->weightAccurate);
+    Serial.print("new this->calculateWeightAccurate(): ");
+    Serial.println(this->calculateWeightAccurate());
+    Serial.println("--------------------");
 }
 
 long Scale::GetOffset() {
@@ -331,18 +381,23 @@ long Scale::GetOffset() {
 /*     return; */
 /* } */
 
-void Scale::updateAccurateAverageWithDiff(long diff) {
-    float values[this->average.getCount()];
+RunningMedian Scale::updateAccurateAverageWithDiff(long diff) {
+    return this->average = this->updateAverageWithDiff(this->average, diff);
+}
+
+RunningMedian Scale::updateAverageWithDiff(RunningMedian average, long diff) {
+    float values[average.getCount()];
 
     // collect old values
-    for (int i = 0; i < 1; i++) {
-        values[i] = this->average.getElement(i);
+    for (int i = 0; i < average.getCount(); i++) {
+        values[i] = average.getElement(i);
     }
 
     // update average with old values + diff
-    for (int i = 0; i < this->average.getCount(); i++) {
-        this->average.add(values[i] + diff);
+    for (int i = 0; i < average.getCount(); i++) {
+        average.add(values[i] - diff);
     }
-    return;
+
+    return average;
 }
 
