@@ -46,13 +46,13 @@ void initLogger()
 
 void initScale()
 {
-    Log.notice("initScale");
+    Log.notice(F("initScale"));
     scale = Scale(HX711_DOUT, HX711_SCK);
 }
 
 void loadBottles(BottleType bottleTypes[10])
 {
-    Log.notice("loadBottles");
+    Log.notice(F("loadBottles"));
     bottleTypes[0].Name = "trappist";
     bottleTypes[0].MinWeight = 105300;
     bottleTypes[0].MaxWeight = 107300;
