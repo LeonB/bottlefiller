@@ -1,6 +1,6 @@
 // set some program constants
 const unsigned short int DEFAULT_SCALE_MEASUREMENTS_PER_SECOND = 11;
-const unsigned int DEFAULT_BOTTLE_DEVIATION = 1000;
+const unsigned int DEFAULT_BOTTLE_DEVIATION = 3000;
 const unsigned int MIN_WEIGHT_DIFF_TO_REGISTER = 100;
 
 // pin assignments
@@ -54,28 +54,28 @@ void loadBottles(BottleType bottleTypes[10])
 {
     Log.notice(F("loadBottles"));
     bottleTypes[0].Name = "trappist";
-    bottleTypes[0].MinWeight = 105300;
-    bottleTypes[0].MaxWeight = 107300;
+    bottleTypes[0].MinWeight = 105000;
+    bottleTypes[0].MaxWeight = 107000;
 
     bottleTypes[1].Name = "steinie";
-    bottleTypes[1].MinWeight = 93450;
-    bottleTypes[1].MaxWeight = 95450;
+    bottleTypes[1].MinWeight = 93000;
+    bottleTypes[1].MaxWeight = 96000;
 
     bottleTypes[2].Name = "longneck";
-    bottleTypes[2].MinWeight = 68000;
+    bottleTypes[2].MinWeight = 67000;
     bottleTypes[2].MaxWeight = 70000;
 
     bottleTypes[3].Name = "vichy 33 cl";
-    bottleTypes[3].MinWeight = 77800;
-    bottleTypes[3].MaxWeight = 79800;
+    bottleTypes[3].MinWeight = 77000;
+    bottleTypes[3].MaxWeight = 80000;
 
     bottleTypes[4].Name = "bnr";
-    bottleTypes[4].MinWeight = 81500;
-    bottleTypes[4].MaxWeight = 83500;
+    bottleTypes[4].MinWeight = 81000;
+    bottleTypes[4].MaxWeight = 84000;
 
     bottleTypes[5].Name = "steinie met beugel";
     bottleTypes[5].MinWeight = 108000;
-    bottleTypes[5].MaxWeight = 110000;
+    bottleTypes[5].MaxWeight = 111000;
 }
 
 void setup()
