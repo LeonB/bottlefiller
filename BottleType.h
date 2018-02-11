@@ -1,5 +1,5 @@
 class BottleType {
     public:
-    char Name[20];
+    String Name;
     unsigned long MinWeight, MaxWeight;
 };

@@ -53,27 +53,27 @@ void initScale()
 void loadBottles(BottleType bottleTypes[10])
 {
     Log.notice("loadBottles");
-    strcpy(bottleTypes[0].Name, "trappist");
+    bottleTypes[0].Name = "trappist";
     bottleTypes[0].MinWeight = 105300;
     bottleTypes[0].MaxWeight = 107300;
 
-    strcpy(bottleTypes[1].Name, "steinie");
+    bottleTypes[1].Name = "steinie";
     bottleTypes[1].MinWeight = 93450;
     bottleTypes[1].MaxWeight = 95450;
 
-    strcpy(bottleTypes[2].Name, "longneck");
+    bottleTypes[2].Name = "longneck";
     bottleTypes[2].MinWeight = 68000;
     bottleTypes[2].MaxWeight = 70000;
 
-    strcpy(bottleTypes[3].Name, "vichy 33 cl");
+    bottleTypes[3].Name = "vichy 33 cl";
     bottleTypes[3].MinWeight = 77800;
     bottleTypes[3].MaxWeight = 79800;
 
-    strcpy(bottleTypes[4].Name, "bnr");
+    bottleTypes[4].Name = "bnr";
     bottleTypes[4].MinWeight = 81500;
     bottleTypes[4].MaxWeight = 83500;
 
-    strcpy(bottleTypes[5].Name, "steinie met beugel");
+    bottleTypes[5].Name = "steinie met beugel";
     bottleTypes[5].MinWeight = 108000;
     bottleTypes[5].MaxWeight = 110000;
 }
@@ -112,7 +112,7 @@ void loop()
         if (update.WeightIsPlaced) {
             Log.notice(F("Weight is placed (accurate)"));
             BottleType bottleType = getBottleBasedOnWeight(update.Weight, bottleTypes);
-            Log.notice(F("Bottle type: %s"), bottleType.Name);
+            Log.notice(F("Bottle type: %s"), bottleType.Name.c_str());
         }
 
         Log.notice(F("-------------------------------"));
