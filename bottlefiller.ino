@@ -7,6 +7,7 @@ const unsigned int MIN_WEIGHT_DIFF_TO_REGISTER = 100;
 const int HX711_DOUT = A1;
 const int HX711_SCK = A0;
 
+#include "ArduinoLog.h"
 #include "BottleType.h"
 #include "Scale.h"
 #include "StopWatch.h"
@@ -24,6 +25,10 @@ BottleType bottleTypes[10];
 double weight;
 bool weightIsChanging = false;
 
+void printNewline(Print* _logOutput) {
+    _logOutput->print("\r\n");
+}
+
 void initSerial()
 {
     Serial.begin(9600);
@@ -32,15 +37,22 @@ void initSerial()
     }
 }
 
+void initLogger()
+{
+    // Initialize with log level and log output
+    Log.begin(LOG_LEVEL_VERBOSE, &Serial);
+    Log.setSuffix(printNewline);
+}
+
 void initScale()
 {
-    Serial.println("initScale");
+    Log.notice("initScale");
     scale = Scale(HX711_DOUT, HX711_SCK);
 }
 
 void loadBottles(BottleType bottleTypes[10])
 {
-    Serial.println("loadBottles");
+    Log.notice("loadBottles");
     strcpy(bottleTypes[0].Name, "trappist");
     bottleTypes[0].MinWeight = 105300;
     bottleTypes[0].MaxWeight = 107300;
@@ -69,6 +81,7 @@ void loadBottles(BottleType bottleTypes[10])
 void setup()
 {
     initSerial();
+    initLogger();
     initScale();
     loadBottles(bottleTypes);
 }
@@ -89,21 +102,19 @@ void loop()
     struct Update update = scale.Update();
 
     if (update.StableWeightUpdated) {
-        Serial.println("New fast equilibrium");
-        Serial.print("New weight: ");
-        Serial.println(update.StableWeight);
+        Log.notice(F("New fast equilibrium"));
+        Log.notice(F("New weight: %d"), update.StableWeight);
 
         if (update.WeightIsRemoved) {
-            Serial.println("Weight is removed (accurate)");
+            Log.notice(F("Weight is removed (accurate)"));
         }
 
         if (update.WeightIsPlaced) {
-            Serial.println("Weight is placed (accurate)");
+            Log.notice(F("Weight is placed (accurate)"));
             BottleType bottleType = getBottleBasedOnWeight(update.Weight, bottleTypes);
-            Serial.print("Bottle type: ");
-            Serial.println(bottleType.Name);
+            Log.notice(F("Bottle type: %s"), bottleType.Name);
         }
 
-        Serial.println("-------------------------------");
+        Log.notice(F("-------------------------------"));
     }
 }
