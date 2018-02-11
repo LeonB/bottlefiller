@@ -11,11 +11,7 @@ Scale::Scale(int pinDout, int pinSck)
     this->loadCell.set_offset(0.0);
     this->chrono.start();
     this->measurementsPerSecond = DEFAULT_SCALE_MEASUREMENTS_PER_SECOND;
-    /* this->fastAverage = RunningMedian(3); */
     this->average = RunningMedian(DEFAULT_SCALE_MEASUREMENTS_PER_SECOND);
-    /* this->scaleIsEmpty = true; */
-    this->stableWeightFast = 0.0;
-    this->stableWeightAccurate = 0.0;
 
     Log.notice(F("Waiting for load cell to become ready"));
     while (!this->loadCell.is_ready()) {
@@ -28,9 +24,7 @@ Scale::Scale(int pinDout, int pinSck)
 
 void Scale::Tare()
 {
-    // reset average
-    /* this->fastAverage.clear(); */
-    /* this->average.clear(); */
+    Log.notice(F("Tare"));
 
     // take enough readings to get a proper median
     struct Update update = this->Update();
@@ -56,7 +50,21 @@ void Scale::Tare()
 
 struct Update Scale::Update()
 {
-    struct Update update = {
+    struct Update updateFast = {
+        this->weightFast, // OldWeight
+        this->weightFast, // Weight
+        this->stableWeightFast, // OldStableWeight
+        this->stableWeightFast, // StableWeight
+        false, // WeightIsRemoved
+        false, // WeightIsPlaced
+        0.0, // WeightDiff
+        this->calculateIfWeightIsStableFast(), // OldWeightIsStable
+        this->calculateIfWeightIsStableFast(), // WeightIsStable
+        false, // StableWeightUpdated
+        false, // AverageUpdated
+    };
+
+    struct Update updateAccurate = {
         this->weightAccurate, // OldWeight
         this->weightAccurate, // Weight
         this->stableWeightAccurate, // OldStableWeight
@@ -82,66 +90,45 @@ struct Update Scale::Update()
         // restart chrono
         this->chrono.restart();
 
-        /* struct Update fastUpdated = this->updateFast(update); */
-        struct Update updateAccurate = this->updateStatusAccurate(update);
+        updateFast = this->updateStatusFast(updateFast);
+        updateAccurate = this->updateStatusAccurate(updateAccurate);
 
         /* bool smallUpdate = !updateAccurate.WeightIsRemoved && !updateAccurate.WeightIsPlaced; */
-        bool newStable = updateAccurate.WeightIsStable && !updateAccurate.OldWeightIsStable;
+        bool newStableAccurate = updateAccurate.WeightIsStable && !updateAccurate.OldWeightIsStable;
 
-        if (updateAccurate.WeightIsRemoved && newStable) {
+        if (updateAccurate.WeightIsRemoved && newStableAccurate) {
             // This tare updates the average and offset, but then the update
             // doesn't get reset...
             this->Tare();
             // So reset update again
-            updateAccurate = this->updateStatusAccurate(update);
+            updateAccurate = this->updateStatusAccurate(updateAccurate);
         }
 
-        return updateAccurate;
-        /* return fastUpdated.AverageUpdated || updateAccurated.AverageUpdated; */
+        return updateFast;
+        /* return updateAccurate; */
     }
 
-    return update;
+    return updateFast;
 }
 
-/* struct Update Scale::updateFast(struct Update update) */
-/* { */
-/*     // get old values */
-/*     bool oldStableFast = this->weightIsStableFast; */
-/*     double oldStableWeightFast = this->stableWeightFast; */
+struct Update Scale::updateStatusFast(struct Update update)
+{
+    // get new weight
+    update.Weight = this->calculateWeightFast();
 
-/*     // get new weight */
-/*     double newFastWeight = this->GetWeightFast(); */
+    // calculate if weight is stable
+    update.WeightIsStable = this->calculateIfWeightIsStableFast();
 
-/*     // calculate if weight is stable */
-/*     this->weightIsStableFast = this->calculateIfWeightIsStableFast(); */
+    // update scale update with new information
+    struct Update updateFast = this->updateStatus(update);
 
-/*     if (oldStableFast == false && this->weightIsStableFast == true && !this->newStableWeightFast) { */
-/*         double diff = oldStableWeightFast - newFastWeight; */
-/*         if (diff > 100.0) { */
-/*             this->weightIsRemovedFast = true; */
-/*             this->weightIsPlacedFast = false; */
-/*             this->stableWeightFast = newFastWeight; */
-/*         } else if (diff < -100.0) { */
-/*             this->weightIsRemovedFast = false; */
-/*             this->weightIsPlacedFast = true; */
-/*         } else { */
-/*             this->weightIsRemovedFast = false; */
-/*             this->weightIsPlacedFast = false; */
-/*         } */
+    // Update scale object with new weights
+    // Should this be done here?
+    this->weightFast = updateFast.Weight;
+    this->stableWeightFast = updateFast.StableWeight;
 
-/*         // In both cases: there is a new equilibrium and there's a new */
-/*         // stable weight */
-/*         this->newStableWeightFast = true; */
-/*         this->stableWeightFast = newFastWeight; */
-
-/*         return update; */
-/*     } */
-
-/*     update.StableWeight = false; */
-/*     update.WeightIsPlaced = false; */
-/*     update.WeightIsRemoved = false; */
-/*     return update; */
-/* } */
+    return updateFast;
+}
 
 struct Update Scale::updateStatusAccurate(struct Update update)
 {

@@ -54,8 +54,8 @@ void loadBottles(BottleType bottleTypes[10])
 {
     Log.notice(F("loadBottles"));
     bottleTypes[0].Name = "trappist";
-    bottleTypes[0].MinWeight = 105000;
-    bottleTypes[0].MaxWeight = 107000;
+    bottleTypes[0].MinWeight = 106000;
+    bottleTypes[0].MaxWeight = 108000;
 
     bottleTypes[1].Name = "steinie";
     bottleTypes[1].MinWeight = 93000;
@@ -74,8 +74,8 @@ void loadBottles(BottleType bottleTypes[10])
     bottleTypes[4].MaxWeight = 84000;
 
     bottleTypes[5].Name = "steinie met beugel";
-    bottleTypes[5].MinWeight = 108000;
-    bottleTypes[5].MaxWeight = 111000;
+    bottleTypes[5].MinWeight = 108500;
+    bottleTypes[5].MaxWeight = 111500;
 }
 
 void setup()
@@ -104,13 +104,15 @@ void loop()
     if (update.StableWeightUpdated) {
         Log.notice(F("New fast equilibrium"));
         Log.notice(F("New stable weight: %D"), update.StableWeight);
+        Log.notice(F("Old stable weight: %D"), update.OldStableWeight);
+        Log.notice(F("WeightDiff: %D"), update.WeightDiff);
 
         if (update.WeightIsRemoved) {
-            Log.notice(F("Weight is removed (accurate)"));
+            Log.notice(F("Weight is removed"));
         }
 
         if (update.WeightIsPlaced) {
-            Log.notice(F("Weight is placed (accurate)"));
+            Log.notice(F("Weight is placed"));
             BottleType bottleType = getBottleBasedOnWeight(update.Weight, bottleTypes);
             Log.notice(F("Bottle type: %s"), bottleType.Name.c_str());
         }
