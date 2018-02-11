@@ -41,7 +41,7 @@ void initScale()
 void loadBottles(BottleType bottleTypes[10])
 {
     Serial.println("loadBottles");
-    strcpy(bottleTypes[0].Name, "westmalle");
+    strcpy(bottleTypes[0].Name, "trappist");
     bottleTypes[0].MinWeight = 105300;
     bottleTypes[0].MaxWeight = 107300;
 
@@ -53,7 +53,7 @@ void loadBottles(BottleType bottleTypes[10])
     bottleTypes[2].MinWeight = 68000;
     bottleTypes[2].MaxWeight = 70000;
 
-    strcpy(bottleTypes[3].Name, "belgian");
+    strcpy(bottleTypes[3].Name, "vichy 33 cl");
     bottleTypes[3].MinWeight = 77800;
     bottleTypes[3].MaxWeight = 79800;
 
