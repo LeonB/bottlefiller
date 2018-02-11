@@ -45,7 +45,7 @@ void loadBottles(BottleType bottleTypes[10])
     bottleTypes[0].MinWeight = 105300;
     bottleTypes[0].MaxWeight = 107300;
 
-    strcpy(bottleTypes[1].Name, "duvel");
+    strcpy(bottleTypes[1].Name, "steinie");
     bottleTypes[1].MinWeight = 93450;
     bottleTypes[1].MaxWeight = 95450;
 
@@ -60,6 +60,10 @@ void loadBottles(BottleType bottleTypes[10])
     strcpy(bottleTypes[4].Name, "bnr");
     bottleTypes[4].MinWeight = 81500;
     bottleTypes[4].MaxWeight = 83500;
+
+    strcpy(bottleTypes[5].Name, "steinie met beugel");
+    bottleTypes[5].MinWeight = 108000;
+    bottleTypes[5].MaxWeight = 110000;
 }
 
 void setup()
