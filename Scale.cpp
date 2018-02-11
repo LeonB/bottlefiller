@@ -47,7 +47,7 @@ void Scale::Tare()
     }
 
     // readings have stabilised: set new offset
-    Log.notice(F("Readings have stabilised at %d"), update.StableWeight);
+    Log.notice(F("Readings have stabilised at %D"), update.StableWeight);
     this->SetOffset(update.StableWeight);
 
     // set initial median as default offset

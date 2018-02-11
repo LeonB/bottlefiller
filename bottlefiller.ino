@@ -103,7 +103,7 @@ void loop()
 
     if (update.StableWeightUpdated) {
         Log.notice(F("New fast equilibrium"));
-        Log.notice(F("New weight: %d"), update.StableWeight);
+        Log.notice(F("New stable weight: %D"), update.StableWeight);
 
         if (update.WeightIsRemoved) {
             Log.notice(F("Weight is removed (accurate)"));
