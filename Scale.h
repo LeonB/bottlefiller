@@ -1,13 +1,14 @@
 #include <Chrono.h>
 #include "HX711.h"
 #include "RunningMedian.h"
+#include "ScaleUpdate.h"
 
 class Scale
 {
 public:
     Scale();
     Scale(int, int);
-    struct Update Update();
+    ScaleUpdate Update();
     void Tare();
     void SetOffset(long);
     void UpdateOffset(long);
@@ -28,26 +29,12 @@ private:
     double weightFast,weightAccurate;
     double stableWeightFast,stableWeightAccurate;
 
-    struct Update updateStatusFast(struct Update);
-    struct Update updateStatusAccurate(struct Update);
-    struct Update updateStatus(struct Update);
+    ScaleUpdate updateStatusFast(ScaleUpdate);
+    ScaleUpdate updateStatusAccurate(ScaleUpdate);
+    ScaleUpdate updateStatus(ScaleUpdate);
     bool calculateIfWeightIsStableFast();
     bool calculateIfWeightIsStableAccurate();
     RunningMedian updateFastAverageWithDiff(long);
     RunningMedian updateAccurateAverageWithDiff(long);
     RunningMedian updateAverageWithDiff(RunningMedian, long);
-};
-
-struct Update {
-    double OldWeight;
-    double Weight;
-    double OldStableWeight;
-    double StableWeight;
-    bool WeightIsRemoved;
-    bool WeightIsPlaced;
-    double WeightDiff;
-    bool OldWeightIsStable;
-    bool WeightIsStable;
-    bool StableWeightUpdated;
-    bool AverageWeightUpdated;
 };

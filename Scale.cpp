@@ -28,7 +28,7 @@ void Scale::Tare()
     Log.notice(F("Tare"));
 
     // take enough readings to get a proper median
-    struct Update update = this->Update();
+    ScaleUpdate update = this->Update();
     if (this->average.getCount() < this->average.getSize()) {
         Log.notice(F("Filling average with samples"));
         while (this->average.getCount() < this->average.getSize()) {
@@ -49,9 +49,9 @@ void Scale::Tare()
     Log.notice(F("Initial load cell offset: %l"), this->GetOffset());
 }
 
-struct Update Scale::Update()
+ScaleUpdate Scale::Update()
 {
-    struct Update updateFast = {
+    ScaleUpdate updateFast = {
         this->weightFast, // OldWeight
         this->weightFast, // Weight
         this->stableWeightFast, // OldStableWeight
@@ -65,7 +65,7 @@ struct Update Scale::Update()
         false, // AverageUpdated
     };
 
-    struct Update updateAccurate = {
+    ScaleUpdate updateAccurate = {
         this->weightAccurate, // OldWeight
         this->weightAccurate, // Weight
         this->stableWeightAccurate, // OldStableWeight
@@ -112,7 +112,7 @@ struct Update Scale::Update()
     return updateFast;
 }
 
-struct Update Scale::updateStatusFast(struct Update update)
+ScaleUpdate Scale::updateStatusFast(ScaleUpdate update)
 {
     // get new weight
     update.Weight = this->calculateWeightFast();
@@ -121,7 +121,7 @@ struct Update Scale::updateStatusFast(struct Update update)
     update.WeightIsStable = this->calculateIfWeightIsStableFast();
 
     // update scale update with new information
-    struct Update updateFast = this->updateStatus(update);
+    ScaleUpdate updateFast = this->updateStatus(update);
 
     // Update scale object with new weights
     // Should this be done here?
@@ -131,7 +131,7 @@ struct Update Scale::updateStatusFast(struct Update update)
     return updateFast;
 }
 
-struct Update Scale::updateStatusAccurate(struct Update update)
+ScaleUpdate Scale::updateStatusAccurate(ScaleUpdate update)
 {
     // get new weight
     update.Weight = this->calculateWeightAccurate();
@@ -140,7 +140,7 @@ struct Update Scale::updateStatusAccurate(struct Update update)
     update.WeightIsStable = this->calculateIfWeightIsStableAccurate();
 
     // update scale update with new information
-    struct Update updateAccurate = this->updateStatus(update);
+    ScaleUpdate updateAccurate = this->updateStatus(update);
 
     // Update scale object with new weights
     // Should this be done here?
@@ -150,7 +150,7 @@ struct Update Scale::updateStatusAccurate(struct Update update)
     return updateAccurate;
 }
 
-struct Update Scale::updateStatus(struct Update update)
+ScaleUpdate Scale::updateStatus(ScaleUpdate update)
 {
     // Keep this clean of this->... calls
 

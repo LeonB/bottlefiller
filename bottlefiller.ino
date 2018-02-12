@@ -102,7 +102,7 @@ BottleType getBottleBasedOnWeight(double weight, BottleType bottleTypes[10]) {
 
 void loop()
 {
-    struct Update update = scale.Update();
+    ScaleUpdate update = scale.Update();
 
     if (update.StableWeightUpdated) {
         Log.notice(F("New fast equilibrium"));
