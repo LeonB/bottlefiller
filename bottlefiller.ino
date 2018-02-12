@@ -7,6 +7,7 @@ const unsigned int DEFAULT_BOTTLE_DEVIATION = 3000;
 // pin assignments
 const int HX711_DOUT = A1;
 const int HX711_SCK = A0;
+const int MAX_BOTTLE_TYPES = 10;
 
 #include "ArduinoLog.h"
 #include "BottleType.h"
@@ -21,7 +22,7 @@ Scale scale;
 StopWatch sw;
 
 // declare list of bottle types
-BottleType bottleTypes[10];
+BottleType bottleTypes[MAX_BOTTLE_TYPES];
 
 double weight;
 bool weightIsChanging = false;
@@ -53,7 +54,7 @@ void initScale()
     scale.SetMaxWeightDiffToBeStable(SCALE_MAX_WEIGHT_DIFF_TO_BE_STABLE);
 }
 
-void loadBottles(BottleType bottleTypes[10])
+void loadBottles(BottleType bottleTypes[MAX_BOTTLE_TYPES])
 {
     Log.notice(F("loadBottles"));
     bottleTypes[0].Name = "trappist";
@@ -89,15 +90,15 @@ void setup()
     loadBottles(bottleTypes);
 }
 
-BottleType getBottleBasedOnWeight(double weight, BottleType bottleTypes[10]) {
-    for (int i = 0; i < 10; i++) {
+BottleType getBottleBasedOnWeight(double weight, BottleType bottleTypes[MAX_BOTTLE_TYPES]) {
+    for (int i = 0; i < MAX_BOTTLE_TYPES; i++) {
         BottleType bottleType = bottleTypes[i];
         if (weight > bottleType.MinWeight && weight < bottleType.MaxWeight) {
             return bottleType;
         }
     }
 
-    return BottleType();
+    return UNKNOWN_BOTTLE;
 }
 
 void loop()
