@@ -1,19 +1,20 @@
+#include "ArduinoLog.h"
+#include "BottleType.h"
+#include "Scale.h"
+/* #include "StopWatch.h" */
+/* #include "MemoryFree.h" */
+
 // set some library constants
 const unsigned short int SCALE_MEASUREMENTS_PER_SECOND = 11;
 const unsigned int SCALE_MAX_WEIGHT_DIFF_TO_BE_STABLE = 100;
 const unsigned int DEFAULT_BOTTLE_DEVIATION = 3000;
 
 // set some program constants
+const int BAUD_RATE = 9600;
+const int MAX_BOTTLE_TYPES = 10;
 // pin assignments
 const int HX711_DOUT = A1;
 const int HX711_SCK = A0;
-const int MAX_BOTTLE_TYPES = 10;
-
-#include "ArduinoLog.h"
-#include "BottleType.h"
-#include "Scale.h"
-/* #include "StopWatch.h" */
-/* #include "MemoryFree.h" */
 
 // declare scale
 Scale scale;
@@ -33,7 +34,7 @@ void printNewline(Print* _logOutput) {
 
 void initSerial()
 {
-    Serial.begin(9600);
+    Serial.begin(BAUD_RATE);
     while (!Serial) {
         ; // wait for serial port to connect. Needed for native USB
     }
