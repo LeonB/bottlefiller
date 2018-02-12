@@ -12,14 +12,14 @@ const int MAX_BOTTLE_TYPES = 10;
 #include "ArduinoLog.h"
 #include "BottleType.h"
 #include "Scale.h"
-#include "StopWatch.h"
-#include "MemoryFree.h"
+/* #include "StopWatch.h" */
+/* #include "MemoryFree.h" */
 
 // declare scale
 Scale scale;
 
 // declare stopwatch for measuring stuff
-StopWatch sw;
+/* StopWatch sw; */
 
 // declare list of bottle types
 BottleType bottleTypes[MAX_BOTTLE_TYPES];
