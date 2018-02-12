@@ -10,8 +10,9 @@ Scale::Scale(int pinDout, int pinSck)
     this->loadCell.begin(pinDout, pinSck);
     this->loadCell.set_offset(0.0);
     this->chrono.start();
-    this->measurementsPerSecond = DEFAULT_SCALE_MEASUREMENTS_PER_SECOND;
-    this->average = RunningMedian(DEFAULT_SCALE_MEASUREMENTS_PER_SECOND);
+
+    // initialize the running median correctly
+    this->average = RunningMedian(this->measurementsPerSecond);
 
     Log.notice(F("Waiting for load cell to become ready"));
     while (!this->loadCell.is_ready()) {
@@ -160,10 +161,10 @@ struct Update Scale::updateStatus(struct Update update)
     if (update.OldWeightIsStable == false && update.WeightIsStable == true) {
         update.WeightDiff = update.OldStableWeight - update.Weight;
 
-        if (update.WeightDiff > 100.0) {
+        if (update.WeightDiff > this->maxWeightDiffToBeStable) {
             update.WeightIsRemoved = true;
             update.WeightIsPlaced = false;
-        } else if (update.WeightDiff < -100.0) {
+        } else if (update.WeightDiff < -this->maxWeightDiffToBeStable) {
             update.WeightIsRemoved = false;
             update.WeightIsPlaced = true;
         } else {
@@ -267,21 +268,6 @@ long Scale::GetOffset() {
     return this->loadCell.get_offset();
 }
 
-/* void Scale::updateFastAverageWithDiff(long diff) { */
-/*     float values[this->fastAverage.getCount()]; */
-
-/*     // collect old values */
-/*     for (int i = 0; i < this->fastAverage.getCount(); i++) { */
-/*         values[i] = this->fastAverage.getElement(i); */
-/*     } */
-
-/*     // update average with old values + diff */
-/*     for (int i = 0; i < this->fastAverage.getCount(); i++) { */
-/*         this->fastAverage.add(values[i] + diff); */
-/*     } */
-/*     return; */
-/* } */
-
 RunningMedian Scale::updateAccurateAverageWithDiff(long diff) {
     this->average = this->updateAverageWithDiff(this->average, diff);
     return this->average;
@@ -303,3 +289,31 @@ RunningMedian Scale::updateAverageWithDiff(RunningMedian average, long diff) {
     return average;
 }
 
+void Scale::SetMeasurementsPerSecond(int measurements)
+{
+    int oldCount = this->average.getCount();
+
+    if (oldCount == measurements) {
+        return;
+    }
+
+    // collect old values
+    float values[oldCount];
+    for (int i = 0; i < oldCount; i++) {
+        values[i] = this->average.getElement(i);
+    }
+
+    // initialize new average
+    this->measurementsPerSecond = measurements;
+    this->average = RunningMedian(this->measurementsPerSecond);
+
+    // update new average with old values
+    for (int i = 0; i < oldCount; i++) {
+        this->average.add(values[i]);
+    }
+}
+
+void Scale::SetMaxWeightDiffToBeStable(unsigned int maxWeight)
+{
+    this->maxWeightDiffToBeStable = maxWeight;
+}

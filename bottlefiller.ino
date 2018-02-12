@@ -1,8 +1,9 @@
-// set some program constants
-const unsigned short int DEFAULT_SCALE_MEASUREMENTS_PER_SECOND = 11;
+// set some library constants
+const unsigned short int SCALE_MEASUREMENTS_PER_SECOND = 11;
+const unsigned int SCALE_MAX_WEIGHT_DIFF_TO_BE_STABLE = 100;
 const unsigned int DEFAULT_BOTTLE_DEVIATION = 3000;
-const unsigned int MIN_WEIGHT_DIFF_TO_REGISTER = 100;
 
+// set some program constants
 // pin assignments
 const int HX711_DOUT = A1;
 const int HX711_SCK = A0;
@@ -48,6 +49,8 @@ void initScale()
 {
     Log.notice(F("initScale"));
     scale = Scale(HX711_DOUT, HX711_SCK);
+    scale.SetMeasurementsPerSecond(SCALE_MEASUREMENTS_PER_SECOND);
+    scale.SetMaxWeightDiffToBeStable(SCALE_MAX_WEIGHT_DIFF_TO_BE_STABLE);
 }
 
 void loadBottles(BottleType bottleTypes[10])
