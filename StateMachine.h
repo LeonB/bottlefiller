@@ -1,3 +1,8 @@
+#include "Scale.h"
+
+#ifndef STATE_MACHINE
+#define STATE_MACHINE
+
 /**
  * States:
  *   - waiting for bottle / empty
@@ -12,6 +17,7 @@ class StateMachine
 {
 public:
     StateMachine();
+    StateMachine(Scale);
     void Loop();
     void WaitingLoop();
     void FillingLoop();
@@ -26,4 +32,7 @@ public:
         Menu,
     };
     State CurrentState;
+    Scale scale;
 };
+
+#endif

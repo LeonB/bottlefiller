@@ -1,3 +1,6 @@
+#ifndef SCALE_UPDATE
+#define SCALE_UPDATE
+
 class ScaleUpdate
 {
 public:
@@ -13,3 +16,5 @@ public:
     bool StableWeightUpdated;
     bool AverageWeightUpdated;
 };
+
+#endif

@@ -58,6 +58,11 @@ void initScale()
     scale.SetMaxWeightDiffToBeStable(SCALE_MAX_WEIGHT_DIFF_TO_BE_STABLE);
 }
 
+void initStateMachine()
+{
+    stateMachine = StateMachine(scale);
+}
+
 void loadBottles(BottleType bottleTypes[MAX_BOTTLE_TYPES])
 {
     Log.notice(F("loadBottles"));
@@ -90,8 +95,9 @@ void setup()
 {
     initSerial();
     initLogger();
-    initScale();
     loadBottles(bottleTypes);
+    initScale();
+    initStateMachine();
 }
 
 BottleType getBottleBasedOnWeight(double weight, BottleType bottleTypes[MAX_BOTTLE_TYPES])
@@ -109,24 +115,4 @@ BottleType getBottleBasedOnWeight(double weight, BottleType bottleTypes[MAX_BOTT
 void loop()
 {
     stateMachine.Loop();
-    ScaleUpdate update = scale.Update();
-
-    if (update.StableWeightUpdated) {
-        Log.notice(F("New fast equilibrium"));
-        Log.notice(F("New stable weight: %D"), update.StableWeight);
-        Log.notice(F("Old stable weight: %D"), update.OldStableWeight);
-        Log.notice(F("WeightDiff: %D"), update.WeightDiff);
-
-        if (update.WeightIsRemoved) {
-            Log.notice(F("Weight is removed"));
-        }
-
-        if (update.WeightIsPlaced) {
-            Log.notice(F("Weight is placed"));
-            BottleType bottleType = getBottleBasedOnWeight(update.Weight, bottleTypes);
-            Log.notice(F("Bottle type: %s"), bottleType.Name.c_str());
-        }
-
-        Log.notice(F("-------------------------------"));
-    }
 }

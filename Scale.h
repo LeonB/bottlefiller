@@ -3,6 +3,9 @@
 #include "RunningMedian.h"
 #include "ScaleUpdate.h"
 
+#ifndef SCALE
+#define SCALE
+
 class Scale
 {
 public:
@@ -38,3 +41,5 @@ private:
     RunningMedian updateAccurateAverageWithDiff(long);
     RunningMedian updateAverageWithDiff(RunningMedian, long);
 };
+
+#endif
