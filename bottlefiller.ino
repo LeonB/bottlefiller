@@ -1,6 +1,7 @@
 #include "ArduinoLog.h"
 #include "BottleType.h"
 #include "Scale.h"
+#include "StateMachine.h"
 /* #include "StopWatch.h" */
 /* #include "MemoryFree.h" */
 
@@ -27,6 +28,7 @@ BottleType bottleTypes[MAX_BOTTLE_TYPES];
 
 double weight;
 bool weightIsChanging = false;
+StateMachine stateMachine;
 
 void printNewline(Print* _logOutput)
 {
@@ -106,6 +108,7 @@ BottleType getBottleBasedOnWeight(double weight, BottleType bottleTypes[MAX_BOTT
 
 void loop()
 {
+    stateMachine.Loop();
     ScaleUpdate update = scale.Update();
 
     if (update.StableWeightUpdated) {
