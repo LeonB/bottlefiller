@@ -230,7 +230,8 @@ bool Scale::calculateIfWeightIsStableAccurate()
     return diff < 750;
 }
 
-void Scale::SetOffset(long stableWeight) {
+void Scale::SetOffset(long stableWeight)
+{
     // oldOffset = -100
     // stableWeight = 20
     // diff = 20
@@ -248,7 +249,8 @@ void Scale::SetOffset(long stableWeight) {
     this->UpdateOffset(stableWeight);
 }
 
-void Scale::UpdateOffset(long diff) {
+void Scale::UpdateOffset(long diff)
+{
     long oldOffset = this->GetOffset();
     long newOffset = oldOffset + diff;
     this->loadCell.set_offset(newOffset);
@@ -264,16 +266,19 @@ void Scale::UpdateOffset(long diff) {
     this->stableWeightFast -= diff;
 }
 
-long Scale::GetOffset() {
+long Scale::GetOffset()
+{
     return this->loadCell.get_offset();
 }
 
-RunningMedian Scale::updateAccurateAverageWithDiff(long diff) {
+RunningMedian Scale::updateAccurateAverageWithDiff(long diff)
+{
     this->average = this->updateAverageWithDiff(this->average, diff);
     return this->average;
 }
 
-RunningMedian Scale::updateAverageWithDiff(RunningMedian average, long diff) {
+RunningMedian Scale::updateAverageWithDiff(RunningMedian average, long diff)
+{
     float values[average.getCount()];
 
     // collect old values
