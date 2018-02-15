@@ -94,17 +94,6 @@ ScaleUpdate Scale::Update()
         updateFast = this->updateStatusFast(updateFast);
         updateAccurate = this->updateStatusAccurate(updateAccurate);
 
-        /* bool smallUpdate = !updateAccurate.WeightIsRemoved && !updateAccurate.WeightIsPlaced; */
-        bool newStableAccurate = updateAccurate.WeightIsStable && !updateAccurate.OldWeightIsStable;
-
-        if (updateAccurate.WeightIsRemoved && newStableAccurate) {
-            // This tare updates the average and offset, but then the update
-            // doesn't get reset...
-            this->Tare();
-            // So reset update again
-            updateAccurate = this->updateStatusAccurate(updateAccurate);
-        }
-
         return updateFast;
         /* return updateAccurate; */
     }
@@ -159,14 +148,14 @@ ScaleUpdate Scale::updateStatus(ScaleUpdate update)
     }
 
     if (update.OldWeightIsStable == false && update.WeightIsStable == true) {
-        update.WeightDiff = update.OldStableWeight - update.Weight;
+        update.WeightDiff = update.Weight - update.OldStableWeight;
 
-        if (update.WeightDiff > this->maxWeightDiffToBeStable) {
-            update.WeightIsRemoved = true;
-            update.WeightIsPlaced = false;
-        } else if (update.WeightDiff < -this->maxWeightDiffToBeStable) {
+        if (update.WeightDiff > this->weightDiffToRegisterAsPlaced) {
             update.WeightIsRemoved = false;
             update.WeightIsPlaced = true;
+        } else if (update.WeightDiff < (this->weightDiffToRegisterAsPlaced * -1.0)) {
+            update.WeightIsRemoved = true;
+            update.WeightIsPlaced = false;
         } else {
             update.WeightIsRemoved = false;
             update.WeightIsPlaced = false;
@@ -221,13 +210,13 @@ bool Scale::calculateIfWeightIsStableFast()
 {
     RunningMedian fastAverage = this->fastAverage();
     double diff = fastAverage.getHighest() - fastAverage.getLowest();
-    return diff < 250;
+    return diff < this->maxWeightDiffToBeStable;
 }
 
 bool Scale::calculateIfWeightIsStableAccurate()
 {
     double diff = this->average.getHighest() - this->average.getLowest();
-    return diff < 750;
+    return diff < this->maxWeightDiffToBeStable;
 }
 
 void Scale::SetOffset(long stableWeight)
@@ -321,4 +310,9 @@ void Scale::SetMeasurementsPerSecond(int measurements)
 void Scale::SetMaxWeightDiffToBeStable(unsigned int maxWeight)
 {
     this->maxWeightDiffToBeStable = maxWeight;
+}
+
+void Scale::SetWeightDiffToRegisterAsPlaced(unsigned int weightDiff)
+{
+    this->weightDiffToRegisterAsPlaced = weightDiff;
 }

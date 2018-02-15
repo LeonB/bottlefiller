@@ -1,4 +1,5 @@
 #include "Scale.h"
+#include "BottleType.h"
 
 #ifndef STATE_MACHINE
 #define STATE_MACHINE
@@ -17,11 +18,15 @@ class StateMachine
 {
 public:
     StateMachine();
-    StateMachine(Scale);
+    StateMachine(Scale, BottleType[]);
     void Loop();
     void WaitingLoop();
+    void ChangeStateFromWaitingToFilling(BottleType);
     void FillingLoop();
+    void ChangeStateFromFillingToWaiting();
+    void ChangeStateFromFillingToFilled();
     void FilledLoop();
+    void ChangeStateFromFilledToWaiting();
     void CalibratingLoop();
     void MenuLoop();
     enum class State {
@@ -32,7 +37,11 @@ public:
         Menu,
     };
     State CurrentState;
+private:
+    BottleType currentBottleType;
+    double currentBottleWeight;
     Scale scale;
+    BottleType bottleTypes[];
 };
 
 #endif

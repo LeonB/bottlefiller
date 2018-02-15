@@ -7,12 +7,12 @@
 
 // set some library constants
 const unsigned short int SCALE_MEASUREMENTS_PER_SECOND = 11;
-const unsigned int SCALE_MAX_WEIGHT_DIFF_TO_BE_STABLE = 100;
+const unsigned int SCALE_MAX_WEIGHT_DIFF_TO_BE_STABLE = 500;
+const unsigned int SCALE_WEIGHT_DIFF_TO_REGISTER_AS_PLACED = 3000;
 const unsigned int DEFAULT_BOTTLE_DEVIATION = 3000;
 
 // set some program constants
 const int BAUD_RATE = 9600;
-const int MAX_BOTTLE_TYPES = 10;
 // pin assignments
 const int HX711_DOUT = A1;
 const int HX711_SCK = A0;
@@ -56,11 +56,12 @@ void initScale()
     scale = Scale(HX711_DOUT, HX711_SCK);
     scale.SetMeasurementsPerSecond(SCALE_MEASUREMENTS_PER_SECOND);
     scale.SetMaxWeightDiffToBeStable(SCALE_MAX_WEIGHT_DIFF_TO_BE_STABLE);
+    scale.SetWeightDiffToRegisterAsPlaced(SCALE_WEIGHT_DIFF_TO_REGISTER_AS_PLACED);
 }
 
 void initStateMachine()
 {
-    stateMachine = StateMachine(scale);
+    stateMachine = StateMachine(scale, bottleTypes);
 }
 
 void loadBottles(BottleType bottleTypes[MAX_BOTTLE_TYPES])
@@ -69,26 +70,35 @@ void loadBottles(BottleType bottleTypes[MAX_BOTTLE_TYPES])
     bottleTypes[0].Name = "trappist";
     bottleTypes[0].MinWeight = 106000;
     bottleTypes[0].MaxWeight = 108000;
+    bottleTypes[0].LiquidWeight = 170600;
 
     bottleTypes[1].Name = "steinie";
     bottleTypes[1].MinWeight = 93000;
     bottleTypes[1].MaxWeight = 96000;
+    bottleTypes[1].LiquidWeight = 170600;
+
 
     bottleTypes[2].Name = "longneck";
     bottleTypes[2].MinWeight = 67000;
     bottleTypes[2].MaxWeight = 70000;
+    bottleTypes[2].LiquidWeight = 170600;
+
 
     bottleTypes[3].Name = "vichy 33 cl";
     bottleTypes[3].MinWeight = 77000;
     bottleTypes[3].MaxWeight = 80000;
+    bottleTypes[3].LiquidWeight = 170600;
+
 
     bottleTypes[4].Name = "bnr";
     bottleTypes[4].MinWeight = 81000;
     bottleTypes[4].MaxWeight = 84000;
+    bottleTypes[4].LiquidWeight = 170600;
 
     bottleTypes[5].Name = "steinie met beugel";
     bottleTypes[5].MinWeight = 108500;
     bottleTypes[5].MaxWeight = 111500;
+    bottleTypes[5].LiquidWeight = 170600;
 }
 
 void setup()
@@ -98,18 +108,6 @@ void setup()
     loadBottles(bottleTypes);
     initScale();
     initStateMachine();
-}
-
-BottleType getBottleBasedOnWeight(double weight, BottleType bottleTypes[MAX_BOTTLE_TYPES])
-{
-    for (int i = 0; i < MAX_BOTTLE_TYPES; i++) {
-        BottleType bottleType = bottleTypes[i];
-        if (weight > bottleType.MinWeight && weight < bottleType.MaxWeight) {
-            return bottleType;
-        }
-    }
-
-    return UNKNOWN_BOTTLE;
 }
 
 void loop()
