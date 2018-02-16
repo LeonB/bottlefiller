@@ -1,6 +1,7 @@
 #include "ArduinoLog.h"
 #include "BottleType.h"
 #include "Scale.h"
+#include "Valve.h"
 #include "StateMachine.h"
 /* #include "StopWatch.h" */
 /* #include "MemoryFree.h" */
@@ -13,12 +14,17 @@ const unsigned int DEFAULT_BOTTLE_DEVIATION = 3000;
 
 // set some program constants
 const int BAUD_RATE = 9600;
+
 // pin assignments
 const int HX711_DOUT = A1;
 const int HX711_SCK = A0;
+const int VALVE_PIN = 1;
 
 // declare scale
 Scale scale;
+
+// declare valve
+Valve valve;
 
 // declare stopwatch for measuring stuff
 /* StopWatch sw; */
@@ -59,9 +65,15 @@ void initScale()
     scale.SetWeightDiffToRegisterAsPlaced(SCALE_WEIGHT_DIFF_TO_REGISTER_AS_PLACED);
 }
 
+void initValve()
+{
+    Log.notice(F("initValve"));
+    valve = Valve(VALVE_PIN);
+}
+
 void initStateMachine()
 {
-    stateMachine = StateMachine(scale, bottleTypes);
+    stateMachine = StateMachine(scale, valve, bottleTypes);
 }
 
 void loadBottles(BottleType bottleTypes[MAX_BOTTLE_TYPES])
@@ -107,6 +119,7 @@ void setup()
     initLogger();
     loadBottles(bottleTypes);
     initScale();
+    initValve();
     initStateMachine();
 }
 

@@ -1,4 +1,5 @@
 #include "Scale.h"
+#include "Valve.h"
 #include "BottleType.h"
 
 #ifndef STATE_MACHINE
@@ -18,7 +19,7 @@ class StateMachine
 {
 public:
     StateMachine();
-    StateMachine(Scale, BottleType[]);
+    StateMachine(Scale, Valve, BottleType[]);
     void Loop();
     void WaitingLoop();
     void ChangeStateFromWaitingToFilling(BottleType);
@@ -41,6 +42,7 @@ private:
     BottleType currentBottleType;
     double currentBottleWeight;
     Scale scale;
+    Valve valve;
     BottleType bottleTypes[];
 };
 

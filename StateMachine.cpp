@@ -9,9 +9,10 @@ StateMachine::StateMachine()
     this->currentBottleType = UNKNOWN_BOTTLE;
 }
 
-StateMachine::StateMachine(Scale scale, BottleType bottleTypes[]): StateMachine::StateMachine()
+StateMachine::StateMachine(Scale scale, Valve valve, BottleType bottleTypes[]): StateMachine::StateMachine()
 {
     this->scale = scale;
+    this->valve = valve;
 }
 
 void StateMachine::Loop()
