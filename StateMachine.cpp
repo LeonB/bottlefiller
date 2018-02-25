@@ -15,8 +15,6 @@ StateMachine::StateMachine(Scale scale, Valve valve, BottleType bottleTypes[], P
     this->valve = valve;
     this->greenButton = greenButton;
     this->redButton = redButton;
-
-    this->ChangeStateFromFillingToFilled();
 }
 
 void StateMachine::Loop()
