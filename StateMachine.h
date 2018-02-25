@@ -1,6 +1,7 @@
 #include "Scale.h"
 #include "Valve.h"
 #include "BottleType.h"
+#include "PinButton.h"
 
 #ifndef STATE_MACHINE
 #define STATE_MACHINE
@@ -19,7 +20,7 @@ class StateMachine
 {
 public:
     StateMachine();
-    StateMachine(Scale, Valve, BottleType[]);
+    StateMachine(Scale, Valve, BottleType[], PinButton, PinButton);
     void Loop();
     void WaitingLoop();
     void ChangeStateFromWaitingToFilling(BottleType);
@@ -27,6 +28,7 @@ public:
     void ChangeStateFromFillingToWaiting();
     void ChangeStateFromFillingToFilled();
     void FilledLoop();
+    void ChangeStateFromFilledToFilling();
     void ChangeStateFromFilledToWaiting();
     void CalibratingLoop();
     void MenuLoop();
@@ -39,10 +41,13 @@ public:
     };
     State CurrentState;
 private:
+    void updateButtons();
     BottleType currentBottleType;
     double currentBottleWeight;
     Scale scale;
     Valve valve;
+    PinButton greenButton;
+    PinButton redButton;
     BottleType bottleTypes[];
 };
 

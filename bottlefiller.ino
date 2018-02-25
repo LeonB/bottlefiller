@@ -3,6 +3,7 @@
 #include "Scale.h"
 #include "Valve.h"
 #include "StateMachine.h"
+#include "PinButton.h"
 /* #include "StopWatch.h" */
 /* #include "MemoryFree.h" */
 
@@ -18,13 +19,18 @@ const int BAUD_RATE = 9600;
 // pin assignments
 const int HX711_DOUT = A1;
 const int HX711_SCK = A0;
-const int VALVE_PIN = 1;
+const int VALVE_PIN = 2;
+const int GREEN_BUTTON_PIN = 12;
+const int RED_BUTTON_PIN = 13;
 
 // declare scale
 Scale scale;
 
 // declare valve
 Valve valve;
+
+PinButton greenButton(GREEN_BUTTON_PIN);
+PinButton redButton(RED_BUTTON_PIN);
 
 // declare stopwatch for measuring stuff
 /* StopWatch sw; */
@@ -73,7 +79,12 @@ void initValve()
 
 void initStateMachine()
 {
-    stateMachine = StateMachine(scale, valve, bottleTypes);
+    stateMachine = StateMachine(
+                       scale,
+                       valve,
+                       bottleTypes,
+                       greenButton,
+                       redButton);
 }
 
 void loadBottles(BottleType bottleTypes[MAX_BOTTLE_TYPES])
@@ -123,6 +134,7 @@ void setup()
     initStateMachine();
 }
 
+bool open = false;
 void loop()
 {
     stateMachine.Loop();

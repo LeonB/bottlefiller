@@ -9,10 +9,14 @@ StateMachine::StateMachine()
     this->currentBottleType = UNKNOWN_BOTTLE;
 }
 
-StateMachine::StateMachine(Scale scale, Valve valve, BottleType bottleTypes[]): StateMachine::StateMachine()
+StateMachine::StateMachine(Scale scale, Valve valve, BottleType bottleTypes[], PinButton greenButton, PinButton redButton): StateMachine::StateMachine()
 {
     this->scale = scale;
     this->valve = valve;
+    this->greenButton = greenButton;
+    this->redButton = redButton;
+
+    this->ChangeStateFromFillingToFilled();
 }
 
 void StateMachine::Loop()
@@ -71,6 +75,7 @@ void StateMachine::WaitingLoop()
 void StateMachine::ChangeStateFromWaitingToFilling(BottleType bottleType)
 {
     Log.notice(F("Exiting waiting state"));
+    this->valve.Close();
     this->CurrentState = StateMachine::State::Filling;
     this->currentBottleType = bottleType;
     Log.notice(F("Entering filling state"));
@@ -78,24 +83,39 @@ void StateMachine::ChangeStateFromWaitingToFilling(BottleType bottleType)
 
 void StateMachine::FillingLoop()
 {
-    ScaleUpdate update = this->scale.Update();
-    if (update.WeightIsRemoved) {
-        Log.notice(F("Weight is removed before bottle is filled"));
-        this->ChangeStateFromFillingToWaiting();
+    // Handle buttons
+    this->updateButtons();
+
+    // If either button is clicked: go to filled state
+    if (this->greenButton.isClick() || this->redButton.isClick()) {
+        return this->ChangeStateFromFillingToFilled();
     }
 
+    // Handle scale
+    ScaleUpdate update = this->scale.Update();
+
+    if (update.WeightIsRemoved) {
+        Log.notice(F("Weight is removed before bottle is filled"));
+        return this->ChangeStateFromFillingToWaiting();
+    }
+
+    double maxWeight = this->currentBottleWeight + this->currentBottleType.LiquidWeight;
     if (update.AverageWeightUpdated) {
         // @TODO: better check i n readings are bigger then required weight
-        double maxWeight = this->currentBottleWeight + this->currentBottleType.LiquidWeight;
         if (update.Weight > maxWeight) {
-            this->ChangeStateFromFillingToFilled();
+            return this->ChangeStateFromFillingToFilled();
         }
+    }
+
+    if (update.Weight < maxWeight) {
+        this->valve.Open();
     }
 }
 
 void StateMachine::ChangeStateFromFillingToWaiting()
 {
     Log.notice(F("Exiting filling state"));
+    this->valve.Close();
     this->currentBottleType = UNKNOWN_BOTTLE;
     this->CurrentState = StateMachine::State::Waiting;
     Log.notice(F("Entering waiting state"));
@@ -104,22 +124,53 @@ void StateMachine::ChangeStateFromFillingToWaiting()
 void StateMachine::ChangeStateFromFillingToFilled()
 {
     Log.notice(F("Exiting filling state"));
+    this->valve.Close();
     this->CurrentState = StateMachine::State::Filled;
     Log.notice(F("Entering filled state"));
 }
 
 void StateMachine::FilledLoop()
 {
+    // Handle buttons
+    this->updateButtons();
+
+    // if green button is clicked: return to filling state
+    if (this->greenButton.isSingleClick()) {
+        return this->ChangeStateFromFilledToFilling();
+    }
+
+    // if green button is long down: open valve
+    if (this->greenButton.isLongClick()) {
+        return this->valve.Open();
+    }
+
+    // if green button is up: close valve
+    if (this->greenButton.isReleased()) {
+        return this->valve.Close();
+    }
+
+    // Handle scale
     ScaleUpdate update = this->scale.Update();
+
+    // check if weight is removed
     if (update.WeightIsRemoved) {
         Log.notice(F("WeightDiff: %D"), update.WeightDiff);
-        this->ChangeStateFromFilledToWaiting();
+        return this->ChangeStateFromFilledToWaiting();
     }
+}
+
+void StateMachine::ChangeStateFromFilledToFilling()
+{
+    Log.notice(F("Exiting filled state"));
+    this->valve.Close();
+    this->CurrentState = StateMachine::State::Filling;
+    Log.notice(F("Entering filling state"));
 }
 
 void StateMachine::ChangeStateFromFilledToWaiting()
 {
     Log.notice(F("Exiting filled state"));
+    this->valve.Close();
     this->CurrentState = StateMachine::State::Waiting;
     Log.notice(F("Entering waiting state"));
 }
@@ -132,4 +183,10 @@ void StateMachine::CalibratingLoop()
 void StateMachine::MenuLoop()
 {
     Serial.println("menu");
+}
+
+void StateMachine::updateButtons()
+{
+    this->greenButton.update();
+    this->redButton.update();
 }
