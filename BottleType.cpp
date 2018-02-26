@@ -20,3 +20,17 @@ BottleType::BottleType(String name)
 {
     this->Name = name;
 }
+
+bool BottleType::operator==(const BottleType other) const
+{
+    if (this->Name == other.Name) {
+        return true;
+    }
+
+    return false;
+}
+
+bool BottleType::operator!=(const BottleType other) const
+{
+    return !(*this == other);
+}

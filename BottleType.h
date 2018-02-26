@@ -11,6 +11,8 @@ class BottleType
 
     BottleType();
     BottleType(String);
+    bool operator==(const BottleType) const;
+    bool operator!=(const BottleType) const;
 };
 
 const BottleType UNKNOWN_BOTTLE PROGMEM = BottleType("unknown");

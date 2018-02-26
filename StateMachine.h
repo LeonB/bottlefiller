@@ -23,7 +23,7 @@ public:
     StateMachine(Scale, Valve, BottleType[], PinButton, PinButton);
     void Loop();
     void WaitingLoop();
-    void ChangeStateFromWaitingToFilling(BottleType);
+    void ChangeStateFromWaitingToFilling(ScaleUpdate, BottleType);
     void FillingLoop();
     void ChangeStateFromFillingToWaiting();
     void ChangeStateFromFillingToFilled();
@@ -42,6 +42,8 @@ public:
     State CurrentState;
 private:
     void updateButtons();
+    double getFullWeight();
+    void waitForButtonsToBeReleased();
     BottleType currentBottleType;
     double currentBottleWeight;
     Scale scale;

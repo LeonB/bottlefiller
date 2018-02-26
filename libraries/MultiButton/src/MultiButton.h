@@ -146,6 +146,10 @@ class MultiButton {
       return _new && (_state == StateClickUp || _state == StateOtherUp);
     }
 
+    bool isIdle() {
+      return _state == StateIdle;
+    }
+
   private:
     static const int DEBOUNCE_DELAY    =  20; // ms
     static const int SINGLECLICK_DELAY = 250; // ms
