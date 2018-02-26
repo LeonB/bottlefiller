@@ -9,6 +9,13 @@
   - https://github.com/VaSe7u/LiquidMenu
   - https://github.com/neu-rah/ArduinoMenu
 
+- button libraries
+  - https://github.com/r89m/Button
+  - https://github.com/pololu/pushbutton-arduino
+  - https://github.com/poelstra/arduino-multi-button
+  - https://github.com/julioterra/Switches
+  - https://github.com/madleech/Button
+
 - state machine
   - menu
   - waiting
