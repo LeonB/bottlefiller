@@ -2,7 +2,7 @@
 #include "Valve.h"
 #include "BottleType.h"
 #include "PinButton.h"
-#include "FillReport.h"
+#include "StopWatch.h"
 
 #ifndef STATE_MACHINE
 #define STATE_MACHINE
@@ -50,7 +50,8 @@ private:
     long getFullWeight();
     void waitForButtonsToBeReleased();
     void resetBottle();
-    void resetFillReport();
+    void resetFillingStopWatch();
+    void printReport(ScaleUpdate);
     BottleType currentBottleType;
     long currentBottleWeight;
     Scale scale;
@@ -58,7 +59,7 @@ private:
     PinButton greenButton;
     PinButton redButton;
     BottleType bottleTypes[MAX_BOTTLE_TYPES];
-    FillReport fillReport;
+    StopWatch fillingStopWatch;
 };
 
 #endif

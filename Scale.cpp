@@ -42,7 +42,7 @@ void Scale::Tare()
     }
 
     // readings have stabilised: set new offset
-    Log.notice(F("Readings have stabilised at %D"), update.StableWeight);
+    Log.notice(F("Readings have stabilised at %l"), update.StableWeight);
     this->SetOffset(update.StableWeight);
 
     // set initial median as default offset
@@ -82,7 +82,7 @@ ScaleUpdate Scale::Update()
     // test if at least 100ms (in the default case) have passed
     if (this->chrono.hasPassed(1000/this->measurementsPerSecond)) {
         // get new value
-        long value = this->loadCell.get_value();
+        long value = round(this->loadCell.get_value());
 
         // add reading to average
         this->average.add(value);
@@ -196,14 +196,14 @@ RunningMedian Scale::fastAverage()
 // returns (read_average() - OFFSET), that is the current value without the tare weight; times = how many readings to do
 long Scale::calculateWeightFast()
 {
-    return this->fastAverage().getMedian();
+    return round(this->fastAverage().getMedian());
 }
 
 // returns (read_average() - OFFSET), that is the current value without the tare weight; times = how many readings to do
 long Scale::calculateWeightAccurate()
 {
     /* return this->average.getAverage(2); */
-    return this->average.getMedian();
+    return round(this->average.getMedian());
 }
 
 bool Scale::calculateIfWeightIsStableFast()
