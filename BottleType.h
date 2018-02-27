@@ -16,8 +16,9 @@ public:
 };
 
 const BottleType UNKNOWN_BOTTLE PROGMEM = BottleType("unknown");
-const int MAX_BOTTLE_TYPES = 10;
+const int MAX_BOTTLE_TYPES = 6;
 
-BottleType getBottleBasedOnWeight(double, BottleType[MAX_BOTTLE_TYPES]);
+BottleType getBottleBasedOnWeight(long, BottleType[MAX_BOTTLE_TYPES]);
+void loadBottles(BottleType bottleTypes[MAX_BOTTLE_TYPES]);
 
 #endif

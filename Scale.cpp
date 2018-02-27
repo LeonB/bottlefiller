@@ -58,7 +58,7 @@ ScaleUpdate Scale::Update()
         this->stableWeightFast, // StableWeight
         false, // WeightIsRemoved
         false, // WeightIsPlaced
-        0.0, // WeightDiff
+        0, // WeightDiff
         this->calculateIfWeightIsStableFast(), // OldWeightIsStable
         this->calculateIfWeightIsStableFast(), // WeightIsStable
         false, // StableWeightUpdated
@@ -72,7 +72,7 @@ ScaleUpdate Scale::Update()
         this->stableWeightAccurate, // StableWeight
         false, // WeightIsRemoved
         false, // WeightIsPlaced
-        0.0, // WeightDiff
+        0, // WeightDiff
         this->calculateIfWeightIsStableAccurate(), // OldWeightIsStable
         this->calculateIfWeightIsStableAccurate(), // WeightIsStable
         false, // StableWeightUpdated
@@ -82,7 +82,7 @@ ScaleUpdate Scale::Update()
     // test if at least 100ms (in the default case) have passed
     if (this->chrono.hasPassed(1000/this->measurementsPerSecond)) {
         // get new value
-        double value = this->loadCell.get_value();
+        long value = this->loadCell.get_value();
 
         // add reading to average
         this->average.add(value);
@@ -144,7 +144,7 @@ ScaleUpdate Scale::updateStatus(ScaleUpdate update)
     // Keep this clean of this->... calls
 
     if (update.Weight != update.OldWeight) {
-        update.AverageWeightUpdated = true;
+        update.WeightUpdated = true;
     }
 
     if (update.OldWeightIsStable == false && update.WeightIsStable == true) {
@@ -186,7 +186,7 @@ RunningMedian Scale::fastAverage()
 
     RunningMedian fastAverage(needed);
     for (int i = 0; i < use; ++i) {
-        double val = this->average.getElement(count -1 - i);
+        long val = this->average.getElement(count -1 - i);
         fastAverage.add(val);
     }
 
@@ -194,13 +194,13 @@ RunningMedian Scale::fastAverage()
 }
 
 // returns (read_average() - OFFSET), that is the current value without the tare weight; times = how many readings to do
-double Scale::calculateWeightFast()
+long Scale::calculateWeightFast()
 {
     return this->fastAverage().getMedian();
 }
 
 // returns (read_average() - OFFSET), that is the current value without the tare weight; times = how many readings to do
-double Scale::calculateWeightAccurate()
+long Scale::calculateWeightAccurate()
 {
     /* return this->average.getAverage(2); */
     return this->average.getMedian();
@@ -209,13 +209,13 @@ double Scale::calculateWeightAccurate()
 bool Scale::calculateIfWeightIsStableFast()
 {
     RunningMedian fastAverage = this->fastAverage();
-    double diff = fastAverage.getHighest() - fastAverage.getLowest();
+    long diff = fastAverage.getHighest() - fastAverage.getLowest();
     return diff < this->maxWeightDiffToBeStable;
 }
 
 bool Scale::calculateIfWeightIsStableAccurate()
 {
-    double diff = this->average.getHighest() - this->average.getLowest();
+    long diff = this->average.getHighest() - this->average.getLowest();
     return diff < this->maxWeightDiffToBeStable;
 }
 

@@ -4,17 +4,17 @@
 class ScaleUpdate
 {
 public:
-    double OldWeight;
-    double Weight;
-    double OldStableWeight;
-    double StableWeight;
+    long OldWeight;
+    long Weight;
+    long OldStableWeight;
+    long StableWeight;
     bool WeightIsRemoved;
     bool WeightIsPlaced;
-    double WeightDiff;
+    long WeightDiff;
     bool OldWeightIsStable;
     bool WeightIsStable;
     bool StableWeightUpdated;
-    bool AverageWeightUpdated;
+    bool WeightUpdated;
 };
 
 #endif

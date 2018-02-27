@@ -9,9 +9,9 @@ class FillReport
 public:
     void Reset();
     StopWatch stopWatch;
-    double bottleWeight;
+    long bottleWeight;
     BottleType bottleType;
-    double fillWeight;
+    long fullWeight;
     /* ScaleMeasurements; */
     long scaleOffset;
 };

@@ -21,16 +21,18 @@ class StateMachine
 {
 public:
     StateMachine();
-    StateMachine(Scale, Valve, BottleType[], PinButton, PinButton);
+    StateMachine(Scale, Valve, PinButton, PinButton);
     void Loop();
     void WaitingLoop();
     void ChangeStateFromWaitingToFilling(ScaleUpdate, BottleType);
     void FillingLoop();
     void ChangeStateFromFillingToWaiting();
     void ChangeStateFromFillingToFillingPaused();
-    void ChangeStateFromFillingToFilled();
+    void FillingPausedLoop();
+    void ChangeStateFromFillingPausedToWaiting();
+    void ChangeStateFromFillingPausedToFilling();
+    void ChangeStateFromFillingToFilled(ScaleUpdate);
     void FilledLoop();
-    void ChangeStateFromFilledToFilling();
     void ChangeStateFromFilledToWaiting();
     void CalibratingLoop();
     void MenuLoop();
@@ -45,17 +47,17 @@ public:
     State CurrentState;
 private:
     void updateButtons();
-    double getFullWeight();
+    long getFullWeight();
     void waitForButtonsToBeReleased();
     void resetBottle();
     void resetFillReport();
     BottleType currentBottleType;
-    double currentBottleWeight;
+    long currentBottleWeight;
     Scale scale;
     Valve valve;
     PinButton greenButton;
     PinButton redButton;
-    BottleType bottleTypes[];
+    BottleType bottleTypes[MAX_BOTTLE_TYPES];
     FillReport fillReport;
 };
 

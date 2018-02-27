@@ -9,12 +9,14 @@ StateMachine::StateMachine()
     this->currentBottleType = UNKNOWN_BOTTLE;
 }
 
-StateMachine::StateMachine(Scale scale, Valve valve, BottleType bottleTypes[], PinButton greenButton, PinButton redButton): StateMachine::StateMachine()
+StateMachine::StateMachine(Scale scale, Valve valve, PinButton greenButton, PinButton redButton): StateMachine::StateMachine()
 {
     this->scale = scale;
     this->valve = valve;
     this->greenButton = greenButton;
     this->redButton = redButton;
+
+    loadBottles(this->bottleTypes);
 }
 
 void StateMachine::Loop()
@@ -29,6 +31,9 @@ void StateMachine::Loop()
         break;
     case StateMachine::State::Filling:
         this->FillingLoop();
+        break;
+    case StateMachine::State::FillingPaused:
+        this->FillingPausedLoop();
         break;
     case StateMachine::State::Filled:
         this->FilledLoop();
@@ -51,11 +56,20 @@ void StateMachine::WaitingLoop()
     if (update.WeightIsPlaced) {
         BottleType bottleType = getBottleBasedOnWeight(update.Weight, this->bottleTypes);
 
+        Log.notice(F("Bottle name: %s"), bottleType.Name.c_str());
+        Log.notice(F("Bottle min weight: %l"), bottleType.MinWeight);
+        Log.notice(F("Bottle max weight: %l"), bottleType.MaxWeight);
+
+
         Log.notice(F("Weight is placed"));
-        Log.notice(F("New stable weight: %D"), update.StableWeight);
-        Log.notice(F("Old stable weight: %D"), update.OldStableWeight);
-        Log.notice(F("WeightDiff: %D"), update.WeightDiff);
+        Log.notice(F("New stable weight: %l"), update.StableWeight);
+        Log.notice(F("Old stable weight: %l"), update.OldStableWeight);
+        Log.notice(F("Weight: %l"), update.Weight);
+        Log.notice(F("WeightDiff: %l"), update.WeightDiff);
         Log.notice(F("Bottle type: %s"), bottleType.Name.c_str());
+        Log.notice(F("Bottle min weight: %l"), bottleType.MinWeight);
+        Log.notice(F("Bottle max weight: %l"), bottleType.MaxWeight);
+        Log.notice(F("Bottle fill weight: %l"), bottleType.LiquidWeight);
 
         if (bottleType != UNKNOWN_BOTTLE) {
             return this->ChangeStateFromWaitingToFilling(update, bottleType);
@@ -102,13 +116,13 @@ void StateMachine::FillingLoop()
     }
 
     // check if weight is updated
-    if (update.AverageWeightUpdated) {
+    if (update.WeightUpdated) {
         // calculate full weight (bottle weight + liquid)
-        double fullWeight = this->getFullWeight();
+        long fullWeight = this->getFullWeight();
 
         // @TODO: better check i n readings are bigger then required weight
         if (update.Weight > fullWeight) {
-            return this->ChangeStateFromFillingToFilled();
+            return this->ChangeStateFromFillingToFilled(update);
         }
 
         // weight is still smaller then full weight
@@ -132,6 +146,60 @@ void StateMachine::ChangeStateFromFillingToFillingPaused()
     this->CurrentState = StateMachine::State::FillingPaused;
 }
 
+void StateMachine::FillingPausedLoop()
+{
+    // Handle buttons
+    this->updateButtons();
+
+    // if green button is clicked: return to filling state
+    if (this->greenButton.isClick()) {
+        return this->ChangeStateFromFillingPausedToFilling();
+    }
+
+    // Handle scale
+    ScaleUpdate update = this->scale.Update();
+
+    // check if weight is removed
+    if (update.WeightIsRemoved) {
+        Log.notice(F("WeightDiff: %D"), update.WeightDiff);
+        return this->ChangeStateFromFillingPausedToWaiting();
+    }
+}
+
+void StateMachine::ChangeStateFromFillingPausedToFilling()
+{
+    Log.notice(F("Exiting filling paused state"));
+
+    // close valve
+    this->valve.Close();
+
+    Log.notice(F("Entering waiting state"));
+    this->CurrentState = StateMachine::State::Waiting;
+}
+
+/**
+ * Happens when bottle is removed while filling is paused
+ */
+void StateMachine::ChangeStateFromFillingPausedToWaiting()
+{
+    Log.notice(F("Exiting filling paused state"));
+
+    // close valve
+    this->valve.Close();
+
+    // reset bottle
+    this->resetBottle();
+
+    // reset scale
+    this->scale.Tare();
+
+    Log.notice(F("Entering waiting state"));
+    this->CurrentState = StateMachine::State::Waiting;
+}
+
+/**
+ * Happens when bottle is removed mid filling
+ */
 void StateMachine::ChangeStateFromFillingToWaiting()
 {
     Log.notice(F("Exiting filling state"));
@@ -149,7 +217,7 @@ void StateMachine::ChangeStateFromFillingToWaiting()
     this->CurrentState = StateMachine::State::Waiting;
 }
 
-void StateMachine::ChangeStateFromFillingToFilled()
+void StateMachine::ChangeStateFromFillingToFilled(ScaleUpdate update)
 {
     Log.notice(F("Exiting filling state"));
 
@@ -160,15 +228,52 @@ void StateMachine::ChangeStateFromFillingToFilled()
     // - end weight
     // - weight over time?
     // - scale offset
-    this->fillReport;
-    Log.notice(F(R"END({
-        "time": 0.0,
-        "bottle_weight": 0.0,
-        "bottle_type": {
-        },
-        "fill_weight": 0.0,
-        "scale_offset": 0.0
-    })END"));
+    FillReport fr = this->fillReport;
+    Log.notice(F("{"
+        "\"time\": %l,"
+        "\"bottle_weight\": %l, "
+        "\"full_weight\": %l, "
+        "\"bottle_type\": {"
+            "\"name\": %s, "
+            "\"min_weight\": %l, "
+            "\"max_weight\": %l, "
+            "\"liquid_weight\": %l, "
+        "}, "
+        "\"scale_update\": {"
+            "\"old_weight\": %l, "
+            "\"weight\": %l, "
+            "\"old_stable_weight\": %l, "
+            "\"stable_weight\": %l, "
+            "\"weight_is_removed\": %t, "
+            "\"weight_is_placed\": %t, "
+            "\"weight_diff\": %l, "
+            "\"old_weight_is_stable\": %t, "
+            "\"weight_is_stable\": %t, "
+            "\"stable_weight_updated\": %t, "
+            "\"average_weight_updated\": %t, "
+        "}, "
+    "}"),
+            fr.stopWatch.elapsed(),
+            this->currentBottleWeight,
+            this->getFullWeight(),
+
+            this->currentBottleType.Name.c_str(),
+            this->currentBottleType.MinWeight,
+            this->currentBottleType.MaxWeight,
+            this->currentBottleType.LiquidWeight,
+
+            update.OldWeight,
+            update.Weight,
+            update.OldStableWeight,
+            update.StableWeight,
+            update.WeightIsRemoved,
+            update.WeightIsPlaced,
+            update.WeightDiff,
+            update.OldWeightIsStable,
+            update.WeightIsStable,
+            update.StableWeightUpdated,
+            update.WeightUpdated
+            );
 
     // close valve
     this->valve.Close();
@@ -184,11 +289,6 @@ void StateMachine::FilledLoop()
 {
     // Handle buttons
     this->updateButtons();
-
-    // if green button is clicked: return to filling state
-    if (this->greenButton.isSingleClick()) {
-        return this->ChangeStateFromFilledToFilling();
-    }
 
     // if green button is long down: open valve
     if (this->greenButton.isLongClick()) {
@@ -208,17 +308,6 @@ void StateMachine::FilledLoop()
         Log.notice(F("WeightDiff: %D"), update.WeightDiff);
         return this->ChangeStateFromFilledToWaiting();
     }
-}
-
-void StateMachine::ChangeStateFromFilledToFilling()
-{
-    Log.notice(F("Exiting filled state"));
-
-    // close valve
-    this->valve.Close();
-
-    Log.notice(F("Entering filling state"));
-    this->CurrentState = StateMachine::State::Filling;
 }
 
 void StateMachine::ChangeStateFromFilledToWaiting()
@@ -251,7 +340,7 @@ void StateMachine::updateButtons()
     this->redButton.update();
 }
 
-double StateMachine::getFullWeight()
+long StateMachine::getFullWeight()
 {
     return this->currentBottleWeight + this->currentBottleType.LiquidWeight;
 }
@@ -276,6 +365,8 @@ void StateMachine::resetFillReport()
 {
     this->fillReport.Reset();
     this->fillReport.bottleWeight = this->currentBottleWeight;
+    this->fillReport.fullWeight = this->getFullWeight();
     this->fillReport.bottleType = this->currentBottleType;
     this->fillReport.scaleOffset = this->scale.GetOffset();
 }
+
