@@ -44,6 +44,7 @@ private:
     void updateButtons();
     double getFullWeight();
     void waitForButtonsToBeReleased();
+    void resetBottle();
     BottleType currentBottleType;
     double currentBottleWeight;
     Scale scale;

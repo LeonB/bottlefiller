@@ -66,21 +66,19 @@ void StateMachine::WaitingLoop()
     bool newStable = update.WeightIsStable && !update.OldWeightIsStable;
 
     if (update.WeightIsRemoved && newStable) {
-        // This tare updates the average and offset, but then the update
-        // doesn't get reset...
         this->scale.Tare();
-        // So reset update again
-        /* this->scale.updateStatusAccurate(update); */
     }
 }
 
 void StateMachine::ChangeStateFromWaitingToFilling(ScaleUpdate update, BottleType bottleType)
 {
     Log.notice(F("Exiting waiting state"));
+
     this->valve.Close();
-    this->CurrentState = StateMachine::State::Filling;
     this->currentBottleType = bottleType;
     this->currentBottleWeight = update.Weight;
+
+    this->CurrentState = StateMachine::State::Filling;
     Log.notice(F("Entering filling state"));
 }
 
@@ -103,7 +101,7 @@ void StateMachine::FillingLoop()
     }
 
     // check if weight is updated
-    /* if (update.AverageWeightUpdated) { */
+    if (update.AverageWeightUpdated) {
         // calculate full weight (bottle weight + liquid)
         double fullWeight = this->getFullWeight();
 
@@ -116,30 +114,46 @@ void StateMachine::FillingLoop()
         if (update.Weight < fullWeight) {
             this->valve.Open();
         }
-    /* } */
+    }
 }
 
 void StateMachine::ChangeStateFromFillingToWaiting()
 {
     Log.notice(F("Exiting filling state"));
+
+    // close valve
     this->valve.Close();
-    this->currentBottleType = UNKNOWN_BOTTLE;
-    this->currentBottleWeight = 0.0;
+
+    // reset bottle
+    this->resetBottle();
+
+    // reset scale
     this->scale.Tare();
-    this->CurrentState = StateMachine::State::Waiting;
+
     Log.notice(F("Entering waiting state"));
+    this->CurrentState = StateMachine::State::Waiting;
 }
 
-void StateMachine::ChangeStateFromFillingToFilled()
+void StateMachine::ChangeStateFromFillingToFilled(FillReport fillReport)
 {
     Log.notice(F("Exiting filling state"));
+
+    // @TODO: print fill report:
+    // - time it took
+    // - bottle/start weight
+    // - bottle type
+    // - end weight
+    // - weight over time?
+    // - scale offset
+
+    // close valve
     this->valve.Close();
-    this->CurrentState = StateMachine::State::Filled;
 
     // wait for all buttons to be released
     this->waitForButtonsToBeReleased();
 
     Log.notice(F("Entering filled state"));
+    this->CurrentState = StateMachine::State::Filled;
 }
 
 void StateMachine::FilledLoop()
@@ -175,18 +189,26 @@ void StateMachine::FilledLoop()
 void StateMachine::ChangeStateFromFilledToFilling()
 {
     Log.notice(F("Exiting filled state"));
+
+    // close valve
     this->valve.Close();
-    this->CurrentState = StateMachine::State::Filling;
+
     Log.notice(F("Entering filling state"));
+    this->CurrentState = StateMachine::State::Filling;
 }
 
 void StateMachine::ChangeStateFromFilledToWaiting()
 {
     Log.notice(F("Exiting filled state"));
+
+    // close valve
     this->valve.Close();
+
+    // reset scale
     this->scale.Tare();
-    this->CurrentState = StateMachine::State::Waiting;
+
     Log.notice(F("Entering waiting state"));
+    this->CurrentState = StateMachine::State::Waiting;
 }
 
 void StateMachine::CalibratingLoop()
@@ -205,7 +227,8 @@ void StateMachine::updateButtons()
     this->redButton.update();
 }
 
-double StateMachine::getFullWeight(){
+double StateMachine::getFullWeight()
+{
     return this->currentBottleWeight + this->currentBottleType.LiquidWeight;
 }
 
@@ -217,4 +240,10 @@ void StateMachine::waitForButtonsToBeReleased()
             break;
         }
     }
+}
+
+void StateMachine::resetBottle()
+{
+    this->currentBottleType = UNKNOWN_BOTTLE;
+    this->currentBottleWeight = 0.0;
 }
