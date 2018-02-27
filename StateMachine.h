@@ -2,6 +2,7 @@
 #include "Valve.h"
 #include "BottleType.h"
 #include "PinButton.h"
+#include "FillReport.h"
 
 #ifndef STATE_MACHINE
 #define STATE_MACHINE
@@ -26,6 +27,7 @@ public:
     void ChangeStateFromWaitingToFilling(ScaleUpdate, BottleType);
     void FillingLoop();
     void ChangeStateFromFillingToWaiting();
+    void ChangeStateFromFillingToFillingPaused();
     void ChangeStateFromFillingToFilled();
     void FilledLoop();
     void ChangeStateFromFilledToFilling();
@@ -35,6 +37,7 @@ public:
     enum class State {
         Waiting,
         Filling,
+        FillingPaused,
         Filled,
         Calibrating,
         Menu,
@@ -45,6 +48,7 @@ private:
     double getFullWeight();
     void waitForButtonsToBeReleased();
     void resetBottle();
+    void resetFillReport();
     BottleType currentBottleType;
     double currentBottleWeight;
     Scale scale;
@@ -52,6 +56,7 @@ private:
     PinButton greenButton;
     PinButton redButton;
     BottleType bottleTypes[];
+    FillReport fillReport;
 };
 
 #endif

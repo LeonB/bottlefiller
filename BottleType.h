@@ -5,7 +5,7 @@
 
 class BottleType
 {
-    public:
+public:
     String Name;
     unsigned long MinWeight, MaxWeight, LiquidWeight;
 

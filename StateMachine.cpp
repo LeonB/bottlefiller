@@ -77,6 +77,7 @@ void StateMachine::ChangeStateFromWaitingToFilling(ScaleUpdate update, BottleTyp
     this->valve.Close();
     this->currentBottleType = bottleType;
     this->currentBottleWeight = update.Weight;
+    this->resetFillReport();
 
     this->CurrentState = StateMachine::State::Filling;
     Log.notice(F("Entering filling state"));
@@ -89,7 +90,7 @@ void StateMachine::FillingLoop()
 
     // If either button is clicked: go to filled state
     if (this->greenButton.isClick() || this->redButton.isClick()) {
-        return this->ChangeStateFromFillingToFilled();
+        return this->ChangeStateFromFillingToFillingPaused();
     }
 
     // Handle scale
@@ -117,6 +118,20 @@ void StateMachine::FillingLoop()
     }
 }
 
+void StateMachine::ChangeStateFromFillingToFillingPaused()
+{
+    Log.notice(F("Exiting filling state"));
+
+    // close valve
+    this->valve.Close();
+
+    // wait for all buttons to be released
+    this->waitForButtonsToBeReleased();
+
+    Log.notice(F("Entering filling paused state"));
+    this->CurrentState = StateMachine::State::FillingPaused;
+}
+
 void StateMachine::ChangeStateFromFillingToWaiting()
 {
     Log.notice(F("Exiting filling state"));
@@ -134,7 +149,7 @@ void StateMachine::ChangeStateFromFillingToWaiting()
     this->CurrentState = StateMachine::State::Waiting;
 }
 
-void StateMachine::ChangeStateFromFillingToFilled(FillReport fillReport)
+void StateMachine::ChangeStateFromFillingToFilled()
 {
     Log.notice(F("Exiting filling state"));
 
@@ -145,6 +160,15 @@ void StateMachine::ChangeStateFromFillingToFilled(FillReport fillReport)
     // - end weight
     // - weight over time?
     // - scale offset
+    this->fillReport;
+    Log.notice(F(R"END({
+        "time": 0.0,
+        "bottle_weight": 0.0,
+        "bottle_type": {
+        },
+        "fill_weight": 0.0,
+        "scale_offset": 0.0
+    })END"));
 
     // close valve
     this->valve.Close();
@@ -246,4 +270,12 @@ void StateMachine::resetBottle()
 {
     this->currentBottleType = UNKNOWN_BOTTLE;
     this->currentBottleWeight = 0.0;
+}
+
+void StateMachine::resetFillReport()
+{
+    this->fillReport.Reset();
+    this->fillReport.bottleWeight = this->currentBottleWeight;
+    this->fillReport.bottleType = this->currentBottleType;
+    this->fillReport.scaleOffset = this->scale.GetOffset();
 }
