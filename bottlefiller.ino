@@ -13,7 +13,7 @@ const unsigned int SCALE_WEIGHT_DIFF_TO_REGISTER_AS_PLACED = 3000;
 const unsigned int DEFAULT_BOTTLE_DEVIATION = 3000;
 
 // set some program constants
-const int BAUD_RATE = 9600;
+const int BAUD_RATE = 19200;
 
 // pin assignments
 const int HX711_DOUT = A1;
