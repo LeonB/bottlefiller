@@ -77,6 +77,7 @@ void StateMachine::ChangeStateFromWaitingToFilling(ScaleUpdate update, BottleTyp
     this->currentBottleType = bottleType;
     this->currentBottleWeight = update.Weight;
     this->resetFillingStopWatch();
+    this->resetLoopCounter();
 
     this->printReport(update);
 
@@ -86,6 +87,9 @@ void StateMachine::ChangeStateFromWaitingToFilling(ScaleUpdate update, BottleTyp
 
 void StateMachine::FillingLoop()
 {
+    // Handle report
+    this->loopCounter++;
+
     // Handle buttons
     this->updateButtons();
 
@@ -148,7 +152,6 @@ void StateMachine::FillingPausedLoop()
 
     // check if weight is removed
     if (update.WeightIsRemoved) {
-        Log.notice(F("WeightDiff: %l"), update.WeightDiff);
         return this->ChangeStateFromFillingPausedToWaiting();
     }
 }
@@ -302,6 +305,10 @@ void StateMachine::resetFillingStopWatch()
     this->fillingStopWatch.start();
 }
 
+void StateMachine::resetLoopCounter()
+{
+    this->loopCounter = 0;
+}
 
 void StateMachine::printReport(ScaleUpdate update)
 {
@@ -319,6 +326,7 @@ void StateMachine::printReport(ScaleUpdate update)
         "\"bottle_weight\": %l, "
         "\"full_weight\": %l, "
         "\"full_weight_deviation\": %l, "
+        "\"loops\": %d, "
         "\"bottle_type\": {"
             "\"name\": %s, "
             "\"min_weight\": %l, "
@@ -343,6 +351,7 @@ void StateMachine::printReport(ScaleUpdate update)
             this->currentBottleWeight,
             this->getFullWeight(),
             fullWeightDeviation,
+            this->loopCounter,
 
             this->currentBottleType.Name.c_str(),
             this->currentBottleType.MinWeight,

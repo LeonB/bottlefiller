@@ -51,6 +51,7 @@ private:
     void waitForButtonsToBeReleased();
     void resetBottle();
     void resetFillingStopWatch();
+    void resetLoopCounter();
     void printReport(ScaleUpdate);
     BottleType currentBottleType;
     long currentBottleWeight;
@@ -60,6 +61,7 @@ private:
     PinButton redButton;
     BottleType bottleTypes[MAX_BOTTLE_TYPES];
     StopWatch fillingStopWatch;
+    unsigned int loopCounter;
 };
 
 #endif
