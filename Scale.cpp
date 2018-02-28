@@ -80,7 +80,7 @@ ScaleUpdate Scale::Update()
     };
 
     // test if at least 100ms (in the default case) have passed
-    if (this->chrono.hasPassed(1000/this->measurementsPerSecond)) {
+    if (this->chrono.hasPassed(1000/this->measurementsPerSecond/2)) {
         // get new value
         long value = round(this->loadCell.get_value());
 
