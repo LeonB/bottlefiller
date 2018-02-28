@@ -106,8 +106,8 @@ void StateMachine::FillingLoop()
         return this->ChangeStateFromFillingToWaiting();
     }
 
-    // check if weight is updated
-    if (update.WeightUpdated) {
+    /* // check if weight is updated */
+    /* if (update.WeightUpdated) { */
         // calculate full weight (bottle weight + liquid)
         long fullWeight = this->getFullWeight();
 
@@ -120,7 +120,7 @@ void StateMachine::FillingLoop()
         if (update.Weight < fullWeight) {
             this->valve.Open();
         }
-    }
+    /* } */
 }
 
 void StateMachine::ChangeStateFromFillingToFillingPaused()
