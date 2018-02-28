@@ -73,15 +73,14 @@ void StateMachine::ChangeStateFromWaitingToFilling(ScaleUpdate update, BottleTyp
 {
     Log.notice(F("Exiting waiting state"));
 
-    this->valve.Close();
+    // print report as first because it takes some time
+    this->printReport(update);
+
     this->currentBottleType = bottleType;
     this->currentBottleWeight = update.Weight;
     this->resetFillingStopWatch();
     this->resetLoopCounter();
-
-
-    // print report as last because it takes some time
-    this->printReport(update);
+    this->valve.Open();
 
     this->CurrentState = StateMachine::State::Filling;
     Log.notice(F("Entering filling state"));
@@ -109,7 +108,7 @@ void StateMachine::FillingLoop()
     }
 
     /* // check if weight is updated */
-    /* if (update.WeightUpdated) { */
+    if (update.WeightUpdated) {
         // calculate full weight (bottle weight + liquid)
         long fullWeight = this->getFullWeight();
 
@@ -117,12 +116,7 @@ void StateMachine::FillingLoop()
         if (update.Weight > fullWeight) {
             return this->ChangeStateFromFillingToFilled(update);
         }
-
-        // weight is still smaller then full weight
-        if (update.Weight < fullWeight) {
-            this->valve.Open();
-        }
-    /* } */
+    }
 }
 
 void StateMachine::ChangeStateFromFillingToFillingPaused()
@@ -163,7 +157,7 @@ void StateMachine::ChangeStateFromFillingPausedToFilling()
     Log.notice(F("Exiting filling paused state"));
 
     // close valve
-    this->valve.Close();
+    this->valve.Open();
 
     Log.notice(F("Entering waiting state"));
     this->CurrentState = StateMachine::State::Waiting;
