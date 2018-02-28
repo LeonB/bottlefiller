@@ -94,8 +94,8 @@ ScaleUpdate Scale::Update()
         updateFast = this->updateStatusFast(updateFast);
         updateAccurate = this->updateStatusAccurate(updateAccurate);
 
-        return updateFast;
-        /* return updateAccurate; */
+        /* return updateFast; */
+        return updateAccurate;
     }
 
     return updateFast;
