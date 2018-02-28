@@ -79,6 +79,8 @@ void StateMachine::ChangeStateFromWaitingToFilling(ScaleUpdate update, BottleTyp
     this->resetFillingStopWatch();
     this->resetLoopCounter();
 
+
+    // print report as last because it takes some time
     this->printReport(update);
 
     this->CurrentState = StateMachine::State::Filling;
@@ -211,13 +213,14 @@ void StateMachine::ChangeStateFromFillingToFilled(ScaleUpdate update)
 {
     Log.notice(F("Exiting filling state"));
 
-    this->printReport(update);
-
     // close valve
     this->valve.Close();
 
     // wait for all buttons to be released
     this->waitForButtonsToBeReleased();
+
+    // print report as last because it takes some time
+    this->printReport(update);
 
     Log.notice(F("Entering filled state"));
     this->CurrentState = StateMachine::State::Filled;
