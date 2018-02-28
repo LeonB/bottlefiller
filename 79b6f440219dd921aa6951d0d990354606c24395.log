@@ -1,0 +1,162 @@
+N: initScale
+N: Waiting for load cell to become ready
+N: Tare
+N: Filling average with samples
+N: Waiting for readings to stabilise
+N: Readings have stabilised at 70960
+N: Initial load cell offset: 70960
+N: initValve
+N: loadBottles
+N: Exiting waiting state
+N: {"time": 0,"bottle_weight": 103822, "full_weight": 125222, "full_weight_deviation": -21400, "loops": 0, "bottle_type": {"name": trappist, "min_weight": 102000, "max_weight": 107500, "liquid_weight": 21400 }, "scale_update": {"old_weight": 103822, "weight": 103822, "old_stable_weight": 0, "stable_weight": 103822, "weight_is_removed": F, "weight_is_placed": T, "weight_diff": 103822, "old_weight_is_stable": F, "weight_is_stable": T, "stable_weight_updated": T, "average_weight_updated": F } }
+N: Entering filling state
+N: Exiting filling state
+N: {"time": 5612,"bottle_weight": 103822, "full_weight": 125222, "full_weight_deviation": 315, "loops": 8528, "bottle_type": {"name": trappist, "min_weight": 102000, "max_weight": 107500, "liquid_weight": 21400 }, "scale_update": {"old_weight": 124686, "weight": 125537, "old_stable_weight": 103822, "stable_weight": 103822, "weight_is_removed": F, "weight_is_placed": F, "weight_diff": 0, "old_weight_is_stable": F, "weight_is_stable": F, "stable_weight_updated": F, "average_weight_updated": T } }
+N: Entering filled state
+N: WeightDiff: -129930
+N: Exiting filled state
+N: Tare
+N: Waiting for readings to stabilise
+N: Readings have stabilised at -5
+N: Initial load cell offset: 70955
+N: Entering waiting state
+N: Exiting waiting state
+N: {"time": 0,"bottle_weight": 104177, "full_weight": 125577, "full_weight_deviation": -21400, "loops": 0, "bottle_type": {"name": trappist, "min_weight": 102000, "max_weight": 107500, "liquid_weight": 21400 }, "scale_update": {"old_weight": 104177, "weight": 104177, "old_stable_weight": 0, "stable_weight": 104177, "weight_is_removed": F, "weight_is_placed": T, "weight_diff": 104177, "old_weight_is_stable": F, "weight_is_stable": T, "stable_weight_updated": T, "average_weight_updated": F } }
+N: Entering filling state
+N: Exiting filling state
+N: {"time": 5087,"bottle_weight": 104177, "full_weight": 125577, "full_weight_deviation": 268, "loops": 7649, "bottle_type": {"name": trappist, "min_weight": 102000, "max_weight": 107500, "liquid_weight": 21400 }, "scale_update": {"old_weight": 124926, "weight": 125845, "old_stable_weight": 104177, "stable_weight": 104177, "weight_is_removed": F, "weight_is_placed": F, "weight_diff": 0, "old_weight_is_stable": F, "weight_is_stable": F, "stable_weight_updated": F, "average_weight_updated": T } }
+N: Entering filled state
+N: WeightDiff: -130631
+N: Exiting filled state
+N: Tare
+N: Waiting for readings to stabilise
+N: Readings have stabilised at 12
+N: Initial load cell offset: 70967
+N: Entering waiting state
+N: Exiting waiting state
+N: {"time": 0,"bottle_weight": 104483, "full_weight": 125883, "full_weight_deviation": -21400, "loops": 0, "bottle_type": {"name": trappist, "min_weight": 102000, "max_weight": 107500, "liquid_weight": 21400 }, "scale_update": {"old_weight": 104483, "weight": 104483, "old_stable_weight": 0, "stable_weight": 104483, "weight_is_removed": F, "weight_is_placed": T, "weight_diff": 104483, "old_weight_is_stable": F, "weight_is_stable": T, "stable_weight_updated": T, "average_weight_updated": F } }
+N: Entering filling state
+N: Exiting filling state
+N: {"time": 5088,"bottle_weight": 104483, "full_weight": 125883, "full_weight_deviation": 245, "loops": 7638, "bottle_type": {"name": trappist, "min_weight": 102000, "max_weight": 107500, "liquid_weight": 21400 }, "scale_update": {"old_weight": 125215, "weight": 126128, "old_stable_weight": 104483, "stable_weight": 104483, "weight_is_removed": F, "weight_is_placed": F, "weight_diff": 0, "old_weight_is_stable": F, "weight_is_stable": F, "stable_weight_updated": F, "average_weight_updated": T } }
+N: Entering filled state
+N: WeightDiff: -133219
+N: Exiting filled state
+N: Tare
+N: Waiting for readings to stabilise
+N: Readings have stabilised at -2
+N: Initial load cell offset: 70965
+N: Entering waiting state
+N: Exiting waiting state
+N: {"time": 0,"bottle_weight": 103973, "full_weight": 125373, "full_weight_deviation": -21400, "loops": 0, "bottle_type": {"name": trappist, "min_weight": 102000, "max_weight": 107500, "liquid_weight": 21400 }, "scale_update": {"old_weight": 103982, "weight": 103973, "old_stable_weight": 0, "stable_weight": 103973, "weight_is_removed": F, "weight_is_placed": T, "weight_diff": 103973, "old_weight_is_stable": F, "weight_is_stable": T, "stable_weight_updated": T, "average_weight_updated": T } }
+N: Entering filling state
+N: Exiting filling state
+N: {"time": 5438,"bottle_weight": 103973, "full_weight": 125373, "full_weight_deviation": 163, "loops": 8227, "bottle_type": {"name": trappist, "min_weight": 102000, "max_weight": 107500, "liquid_weight": 21400 }, "scale_update": {"old_weight": 124623, "weight": 125536, "old_stable_weight": 103973, "stable_weight": 103973, "weight_is_removed": F, "weight_is_placed": F, "weight_diff": 0, "old_weight_is_stable": F, "weight_is_stable": F, "stable_weight_updated": F, "average_weight_updated": T } }
+N: Entering filled state
+N: WeightDiff: -129943
+N: Exiting filled state
+N: Tare
+N: Waiting for readings to stabilise
+N: Readings have stabilised at -62
+N: Initial load cell offset: 70903
+N: Entering waiting state
+N: Exiting waiting state
+N: {"time": 0,"bottle_weight": 104224, "full_weight": 125624, "full_weight_deviation": -21400, "loops": 0, "bottle_type": {"name": trappist, "min_weight": 102000, "max_weight": 107500, "liquid_weight": 21400 }, "scale_update": {"old_weight": 104224, "weight": 104224, "old_stable_weight": 0, "stable_weight": 104224, "weight_is_removed": F, "weight_is_placed": T, "weight_diff": 104224, "old_weight_is_stable": F, "weight_is_stable": T, "stable_weight_updated": T, "average_weight_updated": F } }
+N: Entering filling state
+N: Exiting filling state
+N: {"time": 5086,"bottle_weight": 104224, "full_weight": 125624, "full_weight_deviation": 181, "loops": 7630, "bottle_type": {"name": trappist, "min_weight": 102000, "max_weight": 107500, "liquid_weight": 21400 }, "scale_update": {"old_weight": 124883, "weight": 125805, "old_stable_weight": 104224, "stable_weight": 104224, "weight_is_removed": F, "weight_is_placed": F, "weight_diff": 0, "old_weight_is_stable": F, "weight_is_stable": F, "stable_weight_updated": F, "average_weight_updated": T } }
+N: Entering filled state
+N: WeightDiff: -130150
+N: Exiting filled state
+N: Tare
+N: Waiting for readings to stabilise
+N: Readings have stabilised at -10
+N: Initial load cell offset: 70893
+N: Entering waiting state
+N: Exiting waiting state
+N: {"time": 0,"bottle_weight": 104556, "full_weight": 125956, "full_weight_deviation": -21400, "loops": 0, "bottle_type": {"name": trappist, "min_weight": 102000, "max_weight": 107500, "liquid_weight": 21400 }, "scale_update": {"old_weight": 104476, "weight": 104556, "old_stable_weight": 0, "stable_weight": 104556, "weight_is_removed": F, "weight_is_placed": T, "weight_diff": 104556, "old_weight_is_stable": F, "weight_is_stable": T, "stable_weight_updated": T, "average_weight_updated": T } }
+N: Entering filling state
+N: Exiting filling state
+N: {"time": 5262,"bottle_weight": 104556, "full_weight": 125956, "full_weight_deviation": 865, "loops": 7925, "bottle_type": {"name": trappist, "min_weight": 102000, "max_weight": 107500, "liquid_weight": 21400 }, "scale_update": {"old_weight": 125884, "weight": 126821, "old_stable_weight": 104556, "stable_weight": 104556, "weight_is_removed": F, "weight_is_placed": F, "weight_diff": 0, "old_weight_is_stable": F, "weight_is_stable": F, "stable_weight_updated": F, "average_weight_updated": T } }
+N: Entering filled state
+N: WeightDiff: -131036
+N: Exiting filled state
+N: Tare
+N: Waiting for readings to stabilise
+N: Readings haN: WeightDiff: -130238
+N: Exiting filled state
+N: Tare
+N: Waiting for readings to stabilise
+N: Readings have stabilised at -49
+N: Initial load cell offset: 70956
+N: Entering waiting state
+N: Exiting waiting state
+N: {"time": 0,"bottle_weight": 103349, "full_weight": 124749, "full_weight_deviation": -21400, "loops": 0, "bottle_type": {"name": trappist, "min_weight": 102000, "max_weight": 107500, "liquid_weight": 21400 }, "scale_update": {"old_weight": 103442, "weight": 103349, "old_stable_weight": 0, "stable_weight": 103349, "weight_is_removed": F, "weight_is_placed": T, "weight_diff": 103349, "old_weight_is_stable": F, "weight_is_stable": T, "stable_weight_updated": T, "average_weight_updated": T } }
+N: Entering filling state
+N: Exiting filling state
+N: {"time": 5261,"bottle_weight": 103349, "full_weight": 124749, "full_weight_deviation": 529, "loops": 7942, "bottle_type": {"name": trappist, "min_weight": 102000, "max_weight": 107500, "liquid_weight": 21400 }, "scale_update": {"old_weight": 124320, "weight": 125278, "old_stable_weight": 103349, "stable_weight": 103349, "weight_is_removed": F, "weight_is_placed": F, "weight_diff": 0, "old_weight_is_stable": F, "weight_is_stable": F, "stable_weight_updated": F, "average_weight_updated": T } }
+N: Entering filled state
+N: WeightDiff: -128875
+N: Exiting filled state
+N: Tare
+N: Waiting for readings to stabilise
+N: Readings have stabilised at 92
+N: Initial load cell offset: 71048
+N: Entering waiting state
+N: Exiting waiting state
+N: {"time": 0,"bottle_weight": 103978, "full_weight": 125378, "full_weight_deviation": -21400, "loops": 0, "bottle_type": {"name": trappist, "min_weight": 102000, "max_weight": 107500, "liquid_weight": 21400 }, "scale_update": {"old_weight": 103978, "weight": 103978, "old_stable_weight": 0, "stable_weight": 103978, "weight_is_removed": F, "weight_is_placed": T, "weight_diff": 103978, "old_weight_is_stable": F, "weight_is_stable": T, "stable_weight_updated": T, "average_weight_updated": F } }
+N: Entering filling state
+N: Exiting filling state
+N: {"time": 5437,"bottle_weight": 103978, "full_weight": 125378, "full_weight_deviation": 535, "loops": 8228, "bottle_type": {"name": trappist, "min_weight": 102000, "max_weight": 107500, "liquid_weight": 21400 }, "scale_update": {"old_weight": 124989, "weight": 125913, "old_stable_weight": 105206, "stable_weight": 105206, "weight_is_removed": F, "weight_is_placed": F, "weight_diff": 0, "old_weight_is_stable": F, "weight_is_stable": F, "stable_weight_updated": F, "average_weight_updated": T } }
+N: Entering filled state
+N: WeightDiff: -130248
+N: Exiting filled state
+N: Tare
+N: Waiting for readings to stabilise
+N: Readings have stabilised at -8
+N: Initial load cell offset: 71040
+N: Entering waiting state
+N: Exiting waiting state
+N: {"time": 0,"bottle_weight": 103809, "full_weight": 125209, "full_weight_deviation": -21400, "loops": 0, "bottle_type": {"name": trappist, "min_weight": 102000, "max_weight": 107500, "liquid_weight": 21400 }, "scale_update": {"old_weight": 103848, "weight": 103809, "old_stable_weight": 0, "stable_weight": 103809, "weight_is_removed": F, "weight_is_placed": T, "weight_diff": 103809, "old_weight_is_stable": F, "weight_is_stable": T, "stable_weight_updated": T, "average_weight_updated": T } }
+N: Entering filling state
+N: Exiting filling state
+N: {"time": 5261,"bottle_weight": 103809, "full_weight": 125209, "full_weight_deviation": 310, "loops": 7940, "bottle_type": {"name": trappist, "min_weight": 102000, "max_weight": 107500, "liquid_weight": 21400 }, "scale_update": {"old_weight": 124502, "weight": 125519, "old_stable_weight": 103809, "stable_weight": 103809, "weight_is_removed": F, "weight_is_placed": F, "weight_diff": 0, "old_weight_is_stable": F, "weight_is_stable": F, "stable_weight_updated": F, "average_weight_updated": T } }
+N: Entering filled state
+N: WeightDiff: -130277
+N: Exiting filled state
+N: Tare
+N: Waiting for readings to stabilise
+N: Readings have stabilised at -47
+N: Initial load cell offset: 70993
+N: Entering waiting state
+N: Exiting waiting state
+N: {"time": 0,"bottle_weight": 104338, "full_weight": 125738, "full_weight_deviation": -21400, "loops": 0, "bottle_type": {"name": trappist, "min_weight": 102000, "max_weight": 107500, "liquid_weight": 21400 }, "scale_update": {"old_weight": 104228, "weight": 104338, "old_stable_weight": 0, "stable_weight": 104338, "weight_is_removed": F, "weight_is_placed": T, "weight_diff": 104338, "old_weight_is_stable": F, "weight_is_stable": T, "stable_weight_updated": T, "average_weight_updated": T } }
+N: Entering filling state
+N: Exiting filling state
+N: {"time": 5262,"bottle_weight": 104338, "full_weight": 125738, "full_weight_deviation": 379, "loops": 7923, "bottle_type": {"name": trappist, "min_weight": 102000, "max_weight": 107500, "liquid_weight": 21400 }, "scale_update": {"old_weight": 125156, "weight": 126117, "old_stable_weight": 104338, "stable_weight": 104338, "weight_is_removed": F, "weight_is_placed": F, "weight_diff": 0, "old_weight_is_stable": F, "weight_is_stable": F, "stable_weight_updated": F, "average_weight_updated": T } }
+N: Entering filled state
+N: WeightDiff: -129808
+N: Exiting filled state
+N: Tare
+N: Waiting for readings to stabilise
+N: Readings have stabilised at 48
+N: Initial load cell offset: 71041
+N: Entering waiting state
+N: Exiting waiting state
+N: {"time": 0,"bottle_weight": 104753, "full_weight": 126153, "full_weight_deviation": -21400, "loops": 0, "bottle_type": {"name": trappist, "min_weight": 102000, "max_weight": 107500, "liquid_weight": 21400 }, "scale_update": {"old_weight": 104807, "weight": 104753, "old_stable_weight": 0, "stable_weight": 104753, "weight_is_removed": F, "weight_is_placed": T, "weight_diff": 104753, "old_weight_is_stable": F, "weight_is_stable": T, "stable_weight_updated": T, "average_weight_updated": T } }
+N: Entering filling state
+N: Exiting filling state
+N: {"time": 5263,"bottle_weight": 104753, "full_weight": 126153, "full_weight_deviation": 123, "loops": 7925, "bottle_type": {"name": trappist, "min_weight": 102000, "max_weight": 107500, "liquid_weight": 21400 }, "scale_update": {"old_weight": 125310, "weight": 126276, "old_stable_weight": 104753, "stable_weight": 104753, "weight_is_removed": F, "weight_is_placed": F, "weight_diff": 0, "old_weight_is_stable": F, "weight_is_stable": F, "stable_weight_updated": F, "average_weight_updated": T } }
+N: Entering filled state
+N: WeightDiff: -131294
+N: Exiting filled state
+N: Tare
+N: Waiting for readings to stabilise
+N: Readings have stabilised at -6
+N: Initial load cell offset: 71035
+N: Entering waiting state
+N: Exiting waiting state
+N: {"time": 0,"bottle_weight": 103540, "full_weight": 124940, "full_weight_deviation": -21400, "loops": 0, "bottle_type": {"name": trappist, "min_weight": 102000, "max_weight": 107500, "liquid_weight": 21400 }, "scale_update": {"old_weight": 103544, "weight": 103540, "old_stable_weight": 0, "stable_weight": 103540, "weight_is_removed": F, "weight_is_placed": T, "weight_diff": 103540, "old_weight_is_stable": F, "weight_is_stable": T, "stable_weight_updated": T, "average_weight_updated": T } }
+N: Entering filling state
+N: Exiting filling state
+N: {"time": 5612,"bottle_weight": 103540, "full_weight": 124940, "full_weight_deviation": 620, "loops": 8521, "bottle_type": {"name": trappist, "min_weight": 102000, "max_weight": 107500, "liquid_weight": 21400 }, "scale_update": {"old_weight": 124653, "weight": 125560, "old_stable_weight": 103540, "stable_weight": 103540, "weight_is_removed": F, "weight_is_placed": F, "weight_diff": 0, "old_weight_is_stable": F, "weight_is_stable": F, "stable_weight_updated": F, "average_weight_updated": T } }
+N: Entering filled state
