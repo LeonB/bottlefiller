@@ -1,24 +1,22 @@
 #include "Scale.h"
 #include "ArduinoLog.h"
 
-Scale::Scale():
-    loadCell(0, 0)
+Scale::Scale()
 {
 }
 
-Scale::Scale(byte pinDout, byte pinSck):
-    loadCell(0, 0)
+Scale::Scale(int pinDout, int pinSck)
 {
-    this->loadCell = NBHX711(pinDout, pinSck, 20);
-    this->loadCell.setOffset(0.0);
+    this->loadCell.begin(pinDout, pinSck);
+    this->loadCell.set_offset(0.0);
     this->chrono.start();
 
     // initialize the running median correctly
     this->average = RunningMedian(this->measurementsPerSecond);
 
     Log.notice(F("Waiting for load cell to become ready"));
-    while (!this->loadCell.isReady()) {
-        delay(100);
+    while (!this->loadCell.is_ready()) {
+        ;
     }
 
     // setup zero weight scale
@@ -53,11 +51,6 @@ void Scale::Tare()
 
 ScaleUpdate Scale::Update()
 {
-    // non-blocking update
-    Serial.println("update start");
-    this->loadCell.update();
-    Serial.println("update end");
-
     ScaleUpdate updateFast = {
         this->weightFast, // OldWeight
         this->weightFast, // Weight
@@ -89,7 +82,7 @@ ScaleUpdate Scale::Update()
     // test if at least 100ms (in the default case) have passed
     if (this->chrono.hasPassed(1000/this->measurementsPerSecond)) {
         // get new value
-        long value = round(this->loadCell.getRaw());
+        long value = round(this->loadCell.get_value());
 
         // add reading to average
         this->average.add(value);
@@ -249,7 +242,7 @@ void Scale::UpdateOffset(long diff)
 {
     long oldOffset = this->GetOffset();
     long newOffset = oldOffset + diff;
-    this->loadCell.setOffset(newOffset);
+    this->loadCell.set_offset(newOffset);
 
     // Update averages
     /* this->updateFastAverageWithDiff(diff); */
@@ -264,7 +257,7 @@ void Scale::UpdateOffset(long diff)
 
 long Scale::GetOffset()
 {
-    return this->loadCell.getOffset();
+    return this->loadCell.get_offset();
 }
 
 RunningMedian Scale::updateAccurateAverageWithDiff(long diff)

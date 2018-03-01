@@ -4,7 +4,7 @@ MONITOR_BAUDRATE = 19200
 ARDUINO_DIR      = $(HOME)/bin/arduino-1.8.5/
 USER_LIB_PATH    = $(realpath libraries)
 ARDUINO_LIB_PATH = $(realpath ../../libraries)
-ARDUINO_LIBS     = NBHX711 \
+ARDUINO_LIBS     = HX711 \
 				   StopWatch \
 				   Chrono \
 				   RunningMedian \

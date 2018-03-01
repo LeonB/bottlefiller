@@ -21,9 +21,9 @@ StateMachine::StateMachine(Scale scale, Valve valve, PinButton greenButton, PinB
 
 void StateMachine::Loop()
 {
-    int state = static_cast<int>(this->CurrentState);
-    Serial.print("state: ");
-    Serial.println(state);
+    /* int state = static_cast<int>(this->CurrentState); */
+    /* Serial.print("state: "); */
+    /* Serial.println(state); */
 
     switch (this->CurrentState) {
     case StateMachine::State::Waiting:
@@ -52,7 +52,6 @@ void StateMachine::Loop()
 
 void StateMachine::WaitingLoop()
 {
-    Serial.println("1");
     ScaleUpdate update = this->scale.Update();
     if (update.WeightIsPlaced) {
         BottleType bottleType = getBottleBasedOnWeight(update.Weight, this->bottleTypes);
@@ -61,16 +60,13 @@ void StateMachine::WaitingLoop()
             return this->ChangeStateFromWaitingToFilling(update, bottleType);
         }
     }
-    Serial.println("2");
 
     /* bool smallUpdate = !updateAccurate.WeightIsRemoved && !updateAccurate.WeightIsPlaced; */
     bool newStable = update.WeightIsStable && !update.OldWeightIsStable;
 
-    Serial.println("3");
     if (update.WeightIsRemoved && newStable) {
         this->scale.Tare();
     }
-    Serial.println("4");
 }
 
 void StateMachine::ChangeStateFromWaitingToFilling(ScaleUpdate update, BottleType bottleType)
