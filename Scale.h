@@ -1,5 +1,5 @@
 #include <Chrono.h>
-#include "HX711.h"
+#include "NBHX711.h"
 #include "RunningMedian.h"
 #include "ScaleUpdate.h"
 
@@ -10,7 +10,7 @@ class Scale
 {
 public:
     Scale();
-    Scale(int, int);
+    Scale(byte, byte);
     ScaleUpdate Update();
     void Tare();
     void SetOffset(long);
@@ -26,7 +26,7 @@ private:
     unsigned short int measurementsPerSecond = 10;
     unsigned int maxWeightDiffToBeStable = 100;
     unsigned int weightDiffToRegisterAsPlaced = 1000;
-    HX711 loadCell;
+    NBHX711 loadCell;
     RunningMedian fastAverage();
     RunningMedian average;
     long calculateWeightFast();

@@ -91,7 +91,6 @@ void setup()
     initStateMachine();
 }
 
-bool open = false;
 void loop()
 {
     stateMachine.Loop();
