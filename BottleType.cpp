@@ -10,7 +10,7 @@ BottleType getBottleBasedOnWeight(long weight, BottleType bottleTypes[MAX_BOTTLE
             continue;
         }
 
-        if (weight > bottleType.MinWeight && weight < bottleType.MaxWeight) {
+        if (weight > (signed long)bottleType.MinWeight && weight < (signed long)bottleType.MaxWeight) {
             return bottleType;
         }
     }
