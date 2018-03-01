@@ -20,9 +20,10 @@ lines=$(getlines)
 # format json
 echo $lines \
     | sed "s/N: //g" \
-    | sed 's/trappist/"trappist"/g' \
+    | sed 's/ trappist,/ "trappist",/g' \
     | sed 's/: F/: "F"/g' \
     | sed 's/: T/: "T"/g' \
     | sed 's/,\],/\],/g' \
     | sed 's/\], }/]}/g' \
-    | sed 's/,$//g'
+    | sed 's/,$//g' \
+    | jq "$(cat stats.jq)"
