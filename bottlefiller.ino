@@ -7,7 +7,7 @@
 /* #include "MemoryFree.h" */
 
 // set some library constants
-const unsigned short int SCALE_MEASUREMENTS_PER_SECOND = 11;
+const unsigned short int SCALE_MEASUREMENTS_PER_SECOND = 6;
 const unsigned int SCALE_MAX_WEIGHT_DIFF_TO_BE_STABLE = 500;
 const unsigned int SCALE_WEIGHT_DIFF_TO_REGISTER_AS_PLACED = 3000;
 const unsigned int DEFAULT_BOTTLE_DEVIATION = 3000;

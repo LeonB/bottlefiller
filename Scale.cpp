@@ -16,7 +16,7 @@ Scale::Scale(int pinDout, int pinSck)
 
     Log.notice(F("Waiting for load cell to become ready"));
     while (!this->loadCell.is_ready()) {
-        ;
+        yield();
     }
 
     // setup zero weight scale
@@ -81,8 +81,12 @@ ScaleUpdate Scale::Update()
 
     // test if at least 100ms (in the default case) have passed
     if (this->chrono.hasPassed(1000/this->measurementsPerSecond)) {
+        this->chrono.restart();
+        this->chrono.start();
+
         // get new value
         long value = round(this->loadCell.get_value());
+        Log.notice(F("loadCell.get_value() took %l ms: %l"), this->chrono.elapsed(), value);
 
         // add reading to average
         this->average.add(value);
