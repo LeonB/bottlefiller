@@ -62,6 +62,11 @@ private:
     BottleType bottleTypes[MAX_BOTTLE_TYPES];
     StopWatch fillingStopWatch;
     unsigned int loopCounter;
+
+    unsigned int averageFillRateSamples;
+    long averageFillRate;
+    void updateAverageFillRate(ScaleUpdate);
+    void resetAverageFillRate();
 };
 
 #endif
