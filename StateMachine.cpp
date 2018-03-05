@@ -377,7 +377,7 @@ void StateMachine::printReport(ScaleUpdate update)
             this->fillRate.getMedian(),
             this->loopCounter,
 
-            this->currentBottleType.Name.c_str(),
+            this->currentBottleType.Name,
             this->currentBottleType.MinWeight,
             this->currentBottleType.MaxWeight,
             this->currentBottleType.LiquidWeight,
