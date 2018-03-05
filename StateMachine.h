@@ -3,9 +3,12 @@
 #include "BottleType.h"
 #include "PinButton.h"
 #include "StopWatch.h"
+#include "RunningMedian.h"
 
 #ifndef STATE_MACHINE
 #define STATE_MACHINE
+
+const uint8_t FILL_RATE_SAMPLES = 10;
 
 /**
  * States:
@@ -63,10 +66,15 @@ private:
     StopWatch fillingStopWatch;
     unsigned int loopCounter;
 
-    unsigned int averageFillRateSamples;
-    long averageFillRate;
+    RunningMedian fillRate;
     void updateAverageFillRate(ScaleUpdate);
     void resetAverageFillRate();
+
+    RunningMedian timeBetweenWeightUpdates;
+    void updateAverageTimeBetweenWeightUpdates();
+
+    void updateAverageFillRateAndTime(ScaleUpdate);
+    void resetAverageFillRateAndTime();
 };
 
 #endif
