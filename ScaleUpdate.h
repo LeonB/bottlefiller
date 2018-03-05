@@ -11,6 +11,7 @@ public:
     bool WeightIsRemoved;
     bool WeightIsPlaced;
     long WeightDiff;
+    long StableWeightDiff;
     bool OldWeightIsStable;
     bool WeightIsStable;
     bool StableWeightUpdated;

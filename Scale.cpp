@@ -52,31 +52,33 @@ void Scale::Tare()
 ScaleUpdate Scale::Update()
 {
     ScaleUpdate updateFast = {
-        this->weightFast, // OldWeight
-        this->weightFast, // Weight
-        this->stableWeightFast, // OldStableWeight
-        this->stableWeightFast, // StableWeight
-        false, // WeightIsRemoved
-        false, // WeightIsPlaced
-        0, // WeightDiff
-        this->calculateIfWeightIsStableFast(), // OldWeightIsStable
-        this->calculateIfWeightIsStableFast(), // WeightIsStable
-        false, // StableWeightUpdated
-        false, // AverageUpdated
+           OldWeight: this->weightFast,
+           Weight: this->weightFast,
+           OldStableWeight: this->stableWeightFast,
+           StableWeight: this->stableWeightFast,
+           WeightIsRemoved: false,
+           WeightIsPlaced: false,
+           WeightDiff: 0,
+           StableWeightDiff: 0,
+           OldWeightIsStable: this->calculateIfWeightIsStableFast(),
+           WeightIsStable: this->calculateIfWeightIsStableFast(),
+           StableWeightUpdated: false,
+           WeightUpdated: false,
     };
 
     ScaleUpdate updateAccurate = {
-        this->weightAccurate, // OldWeight
-        this->weightAccurate, // Weight
-        this->stableWeightAccurate, // OldStableWeight
-        this->stableWeightAccurate, // StableWeight
-        false, // WeightIsRemoved
-        false, // WeightIsPlaced
-        0, // WeightDiff
-        this->calculateIfWeightIsStableAccurate(), // OldWeightIsStable
-        this->calculateIfWeightIsStableAccurate(), // WeightIsStable
-        false, // StableWeightUpdated
-        false, // AverageUpdated
+        OldWeight: this->weightAccurate,
+        Weight: this->weightAccurate,
+        OldStableWeight: this->stableWeightAccurate,
+        StableWeight: this->stableWeightAccurate,
+        WeightIsRemoved: false,
+        WeightIsPlaced: false,
+        WeightDiff: 0,
+        StableWeightDiff: 0,
+        OldWeightIsStable: this->calculateIfWeightIsStableAccurate(),
+        WeightIsStable: this->calculateIfWeightIsStableAccurate(),
+        StableWeightUpdated: false,
+        WeightUpdated: false,
     };
 
     // test if at least 100ms (in the default case) have passed
@@ -145,12 +147,13 @@ ScaleUpdate Scale::updateStatus(ScaleUpdate update)
 
     if (update.Weight != update.OldWeight) {
         update.WeightUpdated = true;
+        update.WeightDiff = update.Weight - update.OldWeight;
     }
 
     if (update.OldWeightIsStable == false && update.WeightIsStable == true) {
-        update.WeightDiff = update.Weight - update.OldStableWeight;
+        update.StableWeightDiff = update.Weight - update.OldStableWeight;
 
-        if (update.WeightDiff > this->weightDiffToRegisterAsPlaced) {
+        if (update.StableWeightDiff > this->weightDiffToRegisterAsPlaced) {
             update.WeightIsRemoved = false;
             update.WeightIsPlaced = true;
         } else if (update.WeightDiff < (this->weightDiffToRegisterAsPlaced * -1.0)) {
