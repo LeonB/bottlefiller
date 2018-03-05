@@ -1,11 +1,13 @@
 #include "Scale.h"
 #include <ArduinoLog.h>
 
-Scale::Scale()
+Scale::Scale():
+    average(0)
 {
 }
 
-Scale::Scale(byte pinDout, byte pinSck)
+Scale::Scale(byte pinDout, byte pinSck):
+    average(0)
 {
     this->loadCell.begin(pinDout, pinSck);
     this->loadCell.set_offset(0.0);

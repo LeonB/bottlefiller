@@ -3,11 +3,12 @@
 #include "Arduino.h"
 #include "BottleType.h"
 
-StateMachine::StateMachine()
+StateMachine::StateMachine():
+fillRate(FILL_RATE_SAMPLES),
+timeBetweenWeightUpdates(FILL_RATE_SAMPLES)
 {
     this->CurrentState = StateMachine::State::Waiting;
     this->currentBottleType = UNKNOWN_BOTTLE;
-    this->fillRate = RunningMedian(FILL_RATE_SAMPLES);
 }
 
 StateMachine::StateMachine(Scale scale, Valve valve, PinButton greenButton, PinButton redButton): StateMachine::StateMachine()

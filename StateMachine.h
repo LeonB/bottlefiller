@@ -8,7 +8,7 @@
 #ifndef STATE_MACHINE
 #define STATE_MACHINE
 
-const uint8_t FILL_RATE_SAMPLES = 10;
+const uint8_t FILL_RATE_SAMPLES = 9;
 
 /**
  * States:
