@@ -1,5 +1,5 @@
 #include "Scale.h"
-#include "ArduinoLog.h"
+#include <ArduinoLog.h>
 
 Scale::Scale()
 {

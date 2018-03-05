@@ -4,7 +4,7 @@
 #include "StateMachine.h"
 #include "PinButton.h"
 /* #include "StopWatch.h" */
-/* #include "MemoryFree.h" */
+#include <MemoryFree.h>
 
 // set some library constants
 const unsigned short int SCALE_MEASUREMENTS_PER_SECOND = 6;

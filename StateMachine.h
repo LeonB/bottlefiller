@@ -1,9 +1,9 @@
 #include "Scale.h"
 #include "Valve.h"
 #include "BottleType.h"
-#include "PinButton.h"
-#include "StopWatch.h"
-#include "RunningMedian.h"
+#include <PinButton.h>
+#include <StopWatch.h>
+#include <RunningMedian.h>
 
 #ifndef STATE_MACHINE
 #define STATE_MACHINE

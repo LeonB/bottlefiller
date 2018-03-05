@@ -1,7 +1,7 @@
-#include <Chrono.h>
-#include "HX711.h"
-#include "RunningMedian.h"
 #include "ScaleUpdate.h"
+#include <Chrono.h>
+#include <HX711.h>
+#include <RunningMedian.h>
 
 #ifndef SCALE
 #define SCALE
