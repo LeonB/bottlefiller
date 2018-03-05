@@ -5,7 +5,7 @@ Scale::Scale()
 {
 }
 
-Scale::Scale(int pinDout, int pinSck)
+Scale::Scale(byte pinDout, byte pinSck)
 {
     this->loadCell.begin(pinDout, pinSck);
     this->loadCell.set_offset(0.0);

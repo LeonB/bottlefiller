@@ -10,7 +10,7 @@ class Scale
 {
 public:
     Scale();
-    Scale(int, int);
+    Scale(byte, byte);
     ScaleUpdate Update();
     void Tare();
     void SetOffset(long);
