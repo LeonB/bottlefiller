@@ -22,14 +22,6 @@ const int VALVE_PIN = 2;
 const int GREEN_BUTTON_PIN = 12;
 const int RED_BUTTON_PIN = 13;
 
-PinButton greenButton(GREEN_BUTTON_PIN);
-PinButton redButton(RED_BUTTON_PIN);
-
-// declare stopwatch for measuring stuff
-/* StopWatch sw; */
-
-double weight;
-bool weightIsChanging = false;
 StateMachine stateMachine;
 
 void printNewline(Print* _logOutput)
@@ -71,6 +63,9 @@ Valve initValve()
 
 void initStateMachine(Scale scale, Valve valve)
 {
+
+    PinButton greenButton(GREEN_BUTTON_PIN);
+    PinButton redButton(RED_BUTTON_PIN);
     stateMachine = StateMachine(
                        scale,
                        valve,
@@ -87,7 +82,6 @@ void setup()
     initStateMachine(scale, valve);
 }
 
-bool open = false;
 void loop()
 {
     stateMachine.Loop();
