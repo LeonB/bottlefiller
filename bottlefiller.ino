@@ -22,12 +22,6 @@ const int VALVE_PIN = 2;
 const int GREEN_BUTTON_PIN = 12;
 const int RED_BUTTON_PIN = 13;
 
-// declare scale
-Scale scale;
-
-// declare valve
-Valve valve;
-
 PinButton greenButton(GREEN_BUTTON_PIN);
 PinButton redButton(RED_BUTTON_PIN);
 
@@ -58,22 +52,24 @@ void initLogger()
     Log.setSuffix(printNewline);
 }
 
-void initScale()
+Scale initScale()
 {
     Log.notice(F("initScale"));
-    scale = Scale(HX711_DOUT, HX711_SCK);
+    Scale scale = Scale(HX711_DOUT, HX711_SCK);
     scale.SetMeasurementsPerSecond(SCALE_MEASUREMENTS_PER_SECOND);
     scale.SetMaxWeightDiffToBeStable(SCALE_MAX_WEIGHT_DIFF_TO_BE_STABLE);
     scale.SetWeightDiffToRegisterAsPlaced(SCALE_WEIGHT_DIFF_TO_REGISTER_AS_PLACED);
+    return scale;
 }
 
-void initValve()
+Valve initValve()
 {
     Log.notice(F("initValve"));
-    valve = Valve(VALVE_PIN);
+    Valve valve = Valve(VALVE_PIN);
+    return valve;
 }
 
-void initStateMachine()
+void initStateMachine(Scale scale, Valve valve)
 {
     stateMachine = StateMachine(
                        scale,
@@ -86,9 +82,9 @@ void setup()
 {
     initSerial();
     initLogger();
-    initScale();
-    initValve();
-    initStateMachine();
+    Scale scale = initScale();
+    Valve valve = initValve();
+    initStateMachine(scale, valve);
 }
 
 bool open = false;
