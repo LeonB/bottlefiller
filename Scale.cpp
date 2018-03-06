@@ -155,7 +155,7 @@ ScaleUpdate Scale::updateStatus(ScaleUpdate update)
     if (update.OldWeightIsStable == false && update.WeightIsStable == true) {
         update.StableWeightDiff = update.Weight - update.OldStableWeight;
 
-        if (update.StableWeightDiff > this->weightDiffToRegisterAsPlaced) {
+        if (update.StableWeightDiff > (signed)this->weightDiffToRegisterAsPlaced) {
             update.WeightIsRemoved = false;
             update.WeightIsPlaced = true;
         } else if (update.WeightDiff < (this->weightDiffToRegisterAsPlaced * -1.0)) {
@@ -215,13 +215,13 @@ bool Scale::calculateIfWeightIsStableFast()
 {
     RunningMedian fastAverage = this->fastAverage();
     int diff = fastAverage.getHighest() - fastAverage.getLowest();
-    return diff < this->maxWeightDiffToBeStable;
+    return diff < (signed)this->maxWeightDiffToBeStable;
 }
 
 bool Scale::calculateIfWeightIsStableAccurate()
 {
     int diff = this->average.getHighest() - this->average.getLowest();
-    return diff < this->maxWeightDiffToBeStable;
+    return diff < (signed)this->maxWeightDiffToBeStable;
 }
 
 void Scale::SetOffset(int stableWeight)
