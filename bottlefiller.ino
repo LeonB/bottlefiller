@@ -4,7 +4,7 @@
 #include "StateMachine.h"
 #include "PinButton.h"
 /* #include "StopWatch.h" */
-/* #include <MemoryFree.h> */
+#include <MemoryFree.h>
 
 // set some library constants
 const unsigned short int SCALE_MEASUREMENTS_PER_SECOND = 9;
@@ -36,6 +36,7 @@ void initSerial()
         ; // wait for serial port to connect. Needed for native USB
     }
 }
+
 
 void initLogger()
 {
@@ -79,6 +80,8 @@ void setup()
     Scale scale = initScale();
     Valve valve = initValve();
     initStateMachine(scale, valve);
+
+    Log.notice(F("free mem: %d"), getFreeMemory());
 }
 
 void loop()
