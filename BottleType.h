@@ -7,7 +7,7 @@ class BottleType
 {
 public:
     String Name;
-    unsigned long MinWeight, MaxWeight, LiquidWeight;
+    unsigned int MinWeight, MaxWeight, LiquidWeight;
 
     BottleType();
     BottleType(String);
@@ -18,7 +18,7 @@ public:
 const BottleType UNKNOWN_BOTTLE PROGMEM = BottleType("unknown");
 const int MAX_BOTTLE_TYPES = 6;
 
-BottleType getBottleBasedOnWeight(long, BottleType[MAX_BOTTLE_TYPES]);
+BottleType getBottleBasedOnWeight(int, BottleType[MAX_BOTTLE_TYPES]);
 void loadBottles(BottleType bottleTypes[MAX_BOTTLE_TYPES]);
 
 #endif

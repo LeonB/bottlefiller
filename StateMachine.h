@@ -50,14 +50,14 @@ public:
     State CurrentState;
 private:
     void updateButtons();
-    long getFullWeight();
+    int getFullWeight();
     void waitForButtonsToBeReleased();
     void resetBottle();
     void resetFillingStopWatch();
     void resetLoopCounter();
     void printReport(ScaleUpdate);
     BottleType currentBottleType;
-    long currentBottleWeight;
+    int currentBottleWeight;
     Scale scale;
     Valve valve;
     PinButton greenButton;

@@ -1,7 +1,7 @@
 #include "BottleType.h"
 #include "ArduinoLog.h"
 
-BottleType getBottleBasedOnWeight(long weight, BottleType bottleTypes[MAX_BOTTLE_TYPES])
+BottleType getBottleBasedOnWeight(int weight, BottleType bottleTypes[MAX_BOTTLE_TYPES])
 {
     for (int i = 0; i < MAX_BOTTLE_TYPES; i++) {
         BottleType bottleType = bottleTypes[i];
@@ -10,7 +10,7 @@ BottleType getBottleBasedOnWeight(long weight, BottleType bottleTypes[MAX_BOTTLE
             continue;
         }
 
-        if (weight > (signed long)bottleType.MinWeight && weight < (signed long)bottleType.MaxWeight) {
+        if (weight > (signed int)bottleType.MinWeight && weight < (signed int)bottleType.MaxWeight) {
             return bottleType;
         }
     }
