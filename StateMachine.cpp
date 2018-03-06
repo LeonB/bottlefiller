@@ -265,7 +265,6 @@ void StateMachine::FilledLoop()
 
     // check if weight is removed
     if (update.WeightIsRemoved) {
-        Log.notice(F("WeightDiff: %l"), update.WeightDiff);
         return this->ChangeStateFromFilledToWaiting();
     }
 }
