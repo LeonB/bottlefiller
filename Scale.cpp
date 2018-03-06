@@ -68,21 +68,6 @@ ScaleUpdate Scale::Update()
            WeightUpdated: false,
     };
 
-    ScaleUpdate updateAccurate = {
-        OldWeight: this->weightAccurate,
-        Weight: this->weightAccurate,
-        OldStableWeight: this->stableWeightAccurate,
-        StableWeight: this->stableWeightAccurate,
-        WeightIsRemoved: false,
-        WeightIsPlaced: false,
-        WeightDiff: 0,
-        StableWeightDiff: 0,
-        OldWeightIsStable: this->calculateIfWeightIsStableAccurate(),
-        WeightIsStable: this->calculateIfWeightIsStableAccurate(),
-        StableWeightUpdated: false,
-        WeightUpdated: false,
-    };
-
     // test if at least 100ms (in the default case) have passed
     if (this->chrono.hasPassed(1000/this->measurementsPerSecond)) {
         // get new value
@@ -96,10 +81,8 @@ ScaleUpdate Scale::Update()
         this->chrono.restart();
 
         updateFast = this->updateStatusFast(updateFast);
-        updateAccurate = this->updateStatusAccurate(updateAccurate);
 
         return updateFast;
-        /* return updateAccurate; */
     }
 
     return updateFast;
@@ -122,25 +105,6 @@ ScaleUpdate Scale::updateStatusFast(ScaleUpdate update)
     this->stableWeightFast = updateFast.StableWeight;
 
     return updateFast;
-}
-
-ScaleUpdate Scale::updateStatusAccurate(ScaleUpdate update)
-{
-    // get new weight
-    update.Weight = this->calculateWeightAccurate();
-
-    // calculate if weight is stable
-    update.WeightIsStable = this->calculateIfWeightIsStableAccurate();
-
-    // update scale update with new information
-    ScaleUpdate updateAccurate = this->updateStatus(update);
-
-    // Update scale object with new weights
-    // Should this be done here?
-    this->weightAccurate = updateAccurate.Weight;
-    this->stableWeightAccurate = updateAccurate.StableWeight;
-
-    return updateAccurate;
 }
 
 ScaleUpdate Scale::updateStatus(ScaleUpdate update)
@@ -204,23 +168,10 @@ long Scale::calculateWeightFast()
     return round(this->fastAverage().getMedian());
 }
 
-// returns (read_average() - OFFSET), that is the current value without the tare weight; times = how many readings to do
-long Scale::calculateWeightAccurate()
-{
-    /* return this->average.getAverage(2); */
-    return round(this->average.getMedian());
-}
-
 bool Scale::calculateIfWeightIsStableFast()
 {
     RunningMedian fastAverage = this->fastAverage();
     long diff = fastAverage.getHighest() - fastAverage.getLowest();
-    return diff < (signed)this->maxWeightDiffToBeStable;
-}
-
-bool Scale::calculateIfWeightIsStableAccurate()
-{
-    long diff = this->average.getHighest() - this->average.getLowest();
     return diff < (signed)this->maxWeightDiffToBeStable;
 }
 
@@ -249,13 +200,10 @@ void Scale::UpdateOffset(long diff)
     long newOffset = oldOffset + diff;
     this->loadCell.set_offset(newOffset);
 
-    // Update averages
-    /* this->updateFastAverageWithDiff(diff); */
-    this->updateAccurateAverageWithDiff(diff);
+    // Update average
+    this->average = this->updateAverageWithDiff(this->average, diff);
 
     // Update values
-    this->weightAccurate -= diff;
-    this->stableWeightAccurate -= diff;
     this->weightFast -= diff;
     this->stableWeightFast -= diff;
 }
@@ -263,12 +211,6 @@ void Scale::UpdateOffset(long diff)
 long Scale::GetOffset()
 {
     return this->loadCell.get_offset();
-}
-
-RunningMedian Scale::updateAccurateAverageWithDiff(long diff)
-{
-    this->average = this->updateAverageWithDiff(this->average, diff);
-    return this->average;
 }
 
 RunningMedian Scale::updateAverageWithDiff(RunningMedian average, long diff)

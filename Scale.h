@@ -29,18 +29,20 @@ private:
     HX711 loadCell;
     RunningMedian fastAverage();
     RunningMedian average;
-    long calculateWeightFast();
-    long calculateWeightAccurate();
-    long weightFast,weightAccurate;
-    long stableWeightFast,stableWeightAccurate;
 
+    long weightFast, stableWeightFast;
+    long calculateWeightFast();
     ScaleUpdate updateStatusFast(ScaleUpdate);
-    ScaleUpdate updateStatusAccurate(ScaleUpdate);
     ScaleUpdate updateStatus(ScaleUpdate);
     bool calculateIfWeightIsStableFast();
-    bool calculateIfWeightIsStableAccurate();
     RunningMedian updateFastAverageWithDiff(long);
-    RunningMedian updateAccurateAverageWithDiff(long);
+
+    /* long weightAccurate, stableWeightAccurate; */
+    /* long calculateWeightAccurate(); */
+    /* long calculateWeightAccurate(); */
+    /* bool calculateIfWeightIsStableAccurate(); */
+    /* RunningMedian updateAccurateAverageWithDiff(long); */
+
     RunningMedian updateAverageWithDiff(RunningMedian, long);
 };
 
