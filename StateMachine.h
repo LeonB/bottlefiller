@@ -62,7 +62,7 @@ private:
     Valve valve;
     PinButton greenButton;
     PinButton redButton;
-    BottleType bottleTypes[MAX_BOTTLE_TYPES];
+    BottleType bottleTypes[MAX_BOTTLE_TYPES] PROGMEM;
     StopWatch fillingStopWatch;
     unsigned int loopCounter;
 
