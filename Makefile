@@ -10,7 +10,8 @@ ARDUINO_LIBS     = HX711 \
 				   RunningMedian \
 				   MemoryFree \
 				   Arduino-Log \
-				   MultiButton \
+				   MultiButton
+TAGS_FILE        = ctags
 
 include Arduino.mk
 
