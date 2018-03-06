@@ -23,9 +23,9 @@ private:
     // chrone is used for keeping track when measurements have to be taken
     Chrono chrono;
     // measurementsPerSecond is used for determining when updates should happen
-    unsigned short int measurementsPerSecond = 10;
-    unsigned int maxWeightDiffToBeStable = 100;
-    unsigned int weightDiffToRegisterAsPlaced = 1000;
+    short int measurementsPerSecond = 10;
+    short int maxWeightDiffToBeStable = 100;
+    int weightDiffToRegisterAsPlaced = 1000;
     HX711 loadCell;
     RunningMedian fastAverage();
     RunningMedian average;

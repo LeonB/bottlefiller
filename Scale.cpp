@@ -80,6 +80,7 @@ ScaleUpdate Scale::Update()
         // restart chrono
         this->chrono.restart();
 
+        // set scaleUpdate
         updateFast = this->updateStatusFast(updateFast);
 
         return updateFast;
@@ -119,10 +120,10 @@ ScaleUpdate Scale::updateStatus(ScaleUpdate update)
     if (update.OldWeightIsStable == false && update.WeightIsStable == true) {
         update.StableWeightDiff = update.Weight - update.OldStableWeight;
 
-        if (update.StableWeightDiff > (signed)this->weightDiffToRegisterAsPlaced) {
+        if (update.StableWeightDiff > this->weightDiffToRegisterAsPlaced) {
             update.WeightIsRemoved = false;
             update.WeightIsPlaced = true;
-        } else if (update.WeightDiff < (this->weightDiffToRegisterAsPlaced * -1.0)) {
+        } else if (update.StableWeightDiff < (this->weightDiffToRegisterAsPlaced * -1)) {
             update.WeightIsRemoved = true;
             update.WeightIsPlaced = false;
         } else {

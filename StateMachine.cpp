@@ -113,7 +113,7 @@ void StateMachine::FillingLoop()
     /* // check if weight is updated */
     if (update.WeightUpdated) {
         // Update fillrate
-        this->updateAverageFillRate(update);
+        this->updateAverageFillRateAndTime(update);
 
         // calculate full weight (bottle weight + liquid)
         long fullWeight = this->getFullWeight();
@@ -129,17 +129,28 @@ void StateMachine::FillingLoop()
         // that amount, close valve, update weight and change to filled state
         // - Or work percentage based? Filled 90% -> 95%, 95% -98%, 99% ->100%?
         long fillRate = this->fillRate.getAverage();
-        if (fillRate + update.Weight >= fullWeight) {
+        if (fillRate > 0 && fillRate + update.Weight >= fullWeight) {
             // bottle is filled before next update
-            uint32_t timeToUpdate =  round(this->timeBetweenWeightUpdates.getMedian());
+            Log.notice("fillRate: %l", fillRate);
+
+            unsigned long timeToUpdate =  round(this->timeBetweenWeightUpdates.getMedian());
+            Log.notice("timetoUpdate: %d", timeToUpdate);
+
             long neededWeight = fullWeight - update.Weight;
-            uint32_t timeToFull = round((neededWeight / fillRate) * timeToUpdate);
+            Log.notice("neededWeight: %l", neededWeight);
+
+            float percentage = ((float)neededWeight / (float)fillRate);
+            Log.notice("percentage: %F", percentage);
+
+            unsigned long timeToFull = round(percentage * timeToUpdate);
+            Log.notice("timeToFull: %l", timeToFull);
 
             // Ope valve in case timeToFull was too short and this statement is
             // executed a second time
             this->valve.Open();
             delay(timeToFull);
             this->valve.Close();
+            Serial.println("closed");
         }
     }
 }
@@ -415,12 +426,12 @@ void StateMachine::updateAverageFillRate(ScaleUpdate update)
 
 void StateMachine::updateAverageTimeBetweenWeightUpdates()
 {
-    uint8_t i = this->timeBetweenWeightUpdates.getSize();
+    uint8_t i = this->timeBetweenWeightUpdates.getCount();
     long timeDiff = this->fillingStopWatch.elapsed();
     if (i > 0) {
         // current value - last value
-        long lastElement = round(this->timeBetweenWeightUpdates.getElement(i - i));
-        timeDiff = this->fillingStopWatch.elapsed() - lastElement;
+        long lastElement = round(this->timeBetweenWeightUpdates.getElement(i - 1));
+        timeDiff = timeDiff - lastElement;
     }
 
     this->timeBetweenWeightUpdates.add(timeDiff);
