@@ -8,19 +8,19 @@
 
 // set some library constants
 const unsigned short int SCALE_MEASUREMENTS_PER_SECOND = 9;
-const unsigned int SCALE_MAX_WEIGHT_DIFF_TO_BE_STABLE = 500;
-const unsigned int SCALE_WEIGHT_DIFF_TO_REGISTER_AS_PLACED = 3000;
-const unsigned int DEFAULT_BOTTLE_DEVIATION = 3000;
+const unsigned short int SCALE_MAX_WEIGHT_DIFF_TO_BE_STABLE = 500;
+const unsigned short int SCALE_WEIGHT_DIFF_TO_REGISTER_AS_PLACED = 3000;
+const unsigned short int DEFAULT_BOTTLE_DEVIATION = 3000;
 
 // set some program constants
-const int BAUD_RATE = 19200;
+const short int BAUD_RATE = 19200;
 
 // pin assignments
-const int HX711_DOUT = A1;
-const int HX711_SCK = A0;
-const int VALVE_PIN = 2;
-const int GREEN_BUTTON_PIN = 12;
-const int RED_BUTTON_PIN = 13;
+const byte HX711_DOUT = A1;
+const byte HX711_SCK = A0;
+const byte VALVE_PIN = 2;
+const byte GREEN_BUTTON_PIN = 12;
+const byte RED_BUTTON_PIN = 13;
 
 StateMachine stateMachine;
 
