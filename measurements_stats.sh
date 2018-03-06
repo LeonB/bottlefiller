@@ -6,8 +6,8 @@ function getlines()
     for file in *.log; do
         echo "\"$file\": ["
         cat $file \
-            | grep "{" \
-            | grep "}" \
+            | grep -a "{" \
+            | grep -a "}" \
         | tr '\n' ','
         echo "],"
     done
