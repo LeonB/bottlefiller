@@ -4,14 +4,14 @@
 class ScaleUpdate
 {
 public:
-    int OldWeight;
-    int Weight;
-    int OldStableWeight;
-    int StableWeight;
+    long OldWeight;
+    long Weight;
+    long OldStableWeight;
+    long StableWeight;
     bool WeightIsRemoved;
     bool WeightIsPlaced;
-    int WeightDiff;
-    int StableWeightDiff;
+    long WeightDiff;
+    long StableWeightDiff;
     bool OldWeightIsStable;
     bool WeightIsStable;
     bool StableWeightUpdated;

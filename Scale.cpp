@@ -86,7 +86,7 @@ ScaleUpdate Scale::Update()
     // test if at least 100ms (in the default case) have passed
     if (this->chrono.hasPassed(1000/this->measurementsPerSecond)) {
         // get new value
-        int value = round(this->loadCell.get_value());
+        long value = round(this->loadCell.get_value());
 
         // add reading to average
         this->average.add(value);
@@ -191,7 +191,7 @@ RunningMedian Scale::fastAverage()
 
     RunningMedian fastAverage(needed);
     for (int i = 0; i < use; ++i) {
-        int val = this->average.getElement(count -1 - i);
+        long val = this->average.getElement(count -1 - i);
         fastAverage.add(val);
     }
 
@@ -199,13 +199,13 @@ RunningMedian Scale::fastAverage()
 }
 
 // returns (read_average() - OFFSET), that is the current value without the tare weight; times = how many readings to do
-int Scale::calculateWeightFast()
+long Scale::calculateWeightFast()
 {
     return round(this->fastAverage().getMedian());
 }
 
 // returns (read_average() - OFFSET), that is the current value without the tare weight; times = how many readings to do
-int Scale::calculateWeightAccurate()
+long Scale::calculateWeightAccurate()
 {
     /* return this->average.getAverage(2); */
     return round(this->average.getMedian());
@@ -214,17 +214,17 @@ int Scale::calculateWeightAccurate()
 bool Scale::calculateIfWeightIsStableFast()
 {
     RunningMedian fastAverage = this->fastAverage();
-    int diff = fastAverage.getHighest() - fastAverage.getLowest();
+    long diff = fastAverage.getHighest() - fastAverage.getLowest();
     return diff < (signed)this->maxWeightDiffToBeStable;
 }
 
 bool Scale::calculateIfWeightIsStableAccurate()
 {
-    int diff = this->average.getHighest() - this->average.getLowest();
+    long diff = this->average.getHighest() - this->average.getLowest();
     return diff < (signed)this->maxWeightDiffToBeStable;
 }
 
-void Scale::SetOffset(int stableWeight)
+void Scale::SetOffset(long stableWeight)
 {
     // oldOffset = -100
     // stableWeight = 20
@@ -243,10 +243,10 @@ void Scale::SetOffset(int stableWeight)
     this->UpdateOffset(stableWeight);
 }
 
-void Scale::UpdateOffset(int diff)
+void Scale::UpdateOffset(long diff)
 {
-    int oldOffset = this->GetOffset();
-    int newOffset = oldOffset + diff;
+    long oldOffset = this->GetOffset();
+    long newOffset = oldOffset + diff;
     this->loadCell.set_offset(newOffset);
 
     // Update averages
@@ -260,18 +260,18 @@ void Scale::UpdateOffset(int diff)
     this->stableWeightFast -= diff;
 }
 
-int Scale::GetOffset()
+long Scale::GetOffset()
 {
     return this->loadCell.get_offset();
 }
 
-RunningMedian Scale::updateAccurateAverageWithDiff(int diff)
+RunningMedian Scale::updateAccurateAverageWithDiff(long diff)
 {
     this->average = this->updateAverageWithDiff(this->average, diff);
     return this->average;
 }
 
-RunningMedian Scale::updateAverageWithDiff(RunningMedian average, int diff)
+RunningMedian Scale::updateAverageWithDiff(RunningMedian average, long diff)
 {
     float values[average.getCount()];
 

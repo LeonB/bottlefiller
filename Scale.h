@@ -13,9 +13,9 @@ public:
     Scale(byte, byte);
     ScaleUpdate Update();
     void Tare();
-    void SetOffset(int);
-    void UpdateOffset(int);
-    int GetOffset();
+    void SetOffset(long);
+    void UpdateOffset(long);
+    long GetOffset();
     void SetMeasurementsPerSecond(int);
     void SetMaxWeightDiffToBeStable(unsigned int);
     void SetWeightDiffToRegisterAsPlaced(unsigned int);
@@ -29,19 +29,19 @@ private:
     HX711 loadCell;
     RunningMedian fastAverage();
     RunningMedian average;
-    int calculateWeightFast();
-    int calculateWeightAccurate();
-    int weightFast,weightAccurate;
-    int stableWeightFast,stableWeightAccurate;
+    long calculateWeightFast();
+    long calculateWeightAccurate();
+    long weightFast,weightAccurate;
+    long stableWeightFast,stableWeightAccurate;
 
     ScaleUpdate updateStatusFast(ScaleUpdate);
     ScaleUpdate updateStatusAccurate(ScaleUpdate);
     ScaleUpdate updateStatus(ScaleUpdate);
     bool calculateIfWeightIsStableFast();
     bool calculateIfWeightIsStableAccurate();
-    RunningMedian updateFastAverageWithDiff(int);
-    RunningMedian updateAccurateAverageWithDiff(int);
-    RunningMedian updateAverageWithDiff(RunningMedian, int);
+    RunningMedian updateFastAverageWithDiff(long);
+    RunningMedian updateAccurateAverageWithDiff(long);
+    RunningMedian updateAverageWithDiff(RunningMedian, long);
 };
 
 #endif
