@@ -47,7 +47,7 @@ void StateMachine::Loop()
         this->MenuLoop();
         break;
     default:
-        Serial.println("Unknown state!");
+        Log.error(F("Unknown state"));
         break;
     }
 }
@@ -286,12 +286,12 @@ void StateMachine::ChangeStateFromFilledToWaiting()
 
 void StateMachine::CalibratingLoop()
 {
-    Serial.println("calibrating");
+    Log.notice(F("calibrating"));
 }
 
 void StateMachine::MenuLoop()
 {
-    Serial.println("menu");
+    Log.notice(F("menu"));
 }
 
 void StateMachine::updateButtons()
