@@ -12,6 +12,8 @@ ARDUINO_LIBS     = HX711 \
 				   Arduino-Log \
 				   MultiButton
 TAGS_FILE        = ctags
+CFLAGS          += -DSERIAL_TX_BUFFER_SIZE=16 \
+				   -DSERAL_RX_BUFFER_SIZE=16
 
 include Arduino.mk
 
