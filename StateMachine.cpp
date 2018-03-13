@@ -428,5 +428,5 @@ long StateMachine::getAverageFillRate(ScaleUpdate update)
 
 long StateMachine::getTimeBetweenWeightUpdates()
 {
-    return round(1000/this->scale.GetTimeBetweenWeightUpdates());
+    return this->scale.GetTimeBetweenWeightUpdates();
 }
