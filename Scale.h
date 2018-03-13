@@ -19,6 +19,7 @@ public:
     void SetMeasurementsPerSecond(int);
     void SetMaxWeightDiffToBeStable(unsigned int);
     void SetWeightDiffToRegisterAsPlaced(unsigned int);
+    long GetTimeBetweenWeightUpdates();
 private:
     // chrone is used for keeping track when measurements have to be taken
     Chrono chrono;

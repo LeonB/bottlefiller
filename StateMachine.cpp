@@ -3,9 +3,7 @@
 #include "Arduino.h"
 #include "BottleType.h"
 
-StateMachine::StateMachine():
-fillRate(FILL_RATE_SAMPLES),
-timeBetweenWeightUpdates(FILL_RATE_SAMPLES)
+StateMachine::StateMachine()
 {
     this->CurrentState = StateMachine::State::Waiting;
     this->currentBottleType = UNKNOWN_BOTTLE;
@@ -79,7 +77,6 @@ void StateMachine::ChangeStateFromWaitingToFilling(ScaleUpdate update, BottleTyp
     this->currentBottleWeight = update.Weight;
     this->restartFillingStopWatch();
     this->resetLoopCounter();
-    this->resetAverageFillRateAndTime();
     this->valve.Open();
 
     // print report as last because it takes some time
@@ -112,9 +109,6 @@ void StateMachine::FillingLoop()
 
     /* // check if weight is updated */
     if (update.WeightUpdated) {
-        // Update fillrate
-        this->updateAverageFillRateAndTime(update);
-
         // calculate full weight (bottle weight + liquid)
         long fullWeight = this->getFullWeight();
 
@@ -128,12 +122,12 @@ void StateMachine::FillingLoop()
         // - if so: calculate the ms required to reach fill weight, delay by
         // that amount, close valve, update weight and change to filled state
         // - Or work percentage based? Filled 90% -> 95%, 95% -98%, 99% ->100%?
-        long fillRate = this->fillRate.getAverage();
+        long fillRate = this->getAverageFillRate(update);
         if (fillRate > 0 && fillRate + 400 + update.Weight >= fullWeight) {
             // bottle is filled before next update
             Log.notice("fillRate: %l", fillRate);
 
-            unsigned long timeToUpdate =  round(this->timeBetweenWeightUpdates.getMedian());
+            unsigned long timeToUpdate =  this->getTimeBetweenWeightUpdates();
             Log.notice("timetoUpdate: %d", timeToUpdate);
 
             long neededWeight = fullWeight - update.Weight;
@@ -402,7 +396,7 @@ void StateMachine::printReport(ScaleUpdate update)
             this->currentBottleWeight,
             this->getFullWeight(),
             fullWeightDeviation,
-            this->fillRate.getMedian(),
+            this->getAverageFillRate(update),
             this->loopCounter,
 
             this->currentBottleType.Name.c_str(),
@@ -424,38 +418,14 @@ void StateMachine::printReport(ScaleUpdate update)
             );
 }
 
-void StateMachine::updateAverageFillRateAndTime(ScaleUpdate update)
+long StateMachine::getAverageFillRate(ScaleUpdate update)
 {
-    this->updateAverageFillRate(update);
-    this->updateAverageTimeBetweenWeightUpdates();
+    long weightDiff = update.Weight - this->currentBottleWeight;
+    long elapsed = this->fillingStopWatch.elapsed();
+    return round(weightDiff/elapsed);
 }
 
-// @TODO: remove this?
-// I can calculate average fill rate by using the fillingStopWatc, empty bottle
-// weight and current weight...
-void StateMachine::updateAverageFillRate(ScaleUpdate update)
+long StateMachine::getTimeBetweenWeightUpdates()
 {
-    /* long weightDiff = update.Weight - update.OldWeight; */
-    /* float fillRate = (this->fillRate * this->fillRateSamples) + weightDiff; */
-    /* this->fillRateSamples++; */
-    /* this->fillRate = round(fillRate / this->fillRateSamples); */
-    this->fillRate.add(update.WeightDiff);
-}
-
-void StateMachine::updateAverageTimeBetweenWeightUpdates()
-{
-    unsigned long timeDiff = this->updateStopWatch.elapsed();
-    this->restartUpdateStopWatch();
-    this->timeBetweenWeightUpdates.add(timeDiff);
-}
-
-void StateMachine::resetAverageFillRate()
-{
-    this->fillRate.clear();
-}
-
-void StateMachine::resetAverageFillRateAndTime()
-{
-    this->fillRate.clear();
-    this->timeBetweenWeightUpdates.clear();
+    return round(1000/this->scale.GetTimeBetweenWeightUpdates());
 }

@@ -68,15 +68,8 @@ private:
     StopWatch updateStopWatch;
     unsigned int loopCounter;
 
-    RunningMedian fillRate;
-    void updateAverageFillRate(ScaleUpdate);
-    void resetAverageFillRate();
-
-    RunningMedian timeBetweenWeightUpdates;
-    void updateAverageTimeBetweenWeightUpdates();
-
-    void updateAverageFillRateAndTime(ScaleUpdate);
-    void resetAverageFillRateAndTime();
+    long getAverageFillRate(ScaleUpdate);
+    long getTimeBetweenWeightUpdates();
 };
 
 #endif
