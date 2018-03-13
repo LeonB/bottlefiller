@@ -172,6 +172,9 @@ void StateMachine::ChangeStateFromFillingToFillingPaused()
 {
     Log.notice(msg_exiting, msg_filling);
 
+    // stop the filling stopwatch
+    this->pauseFillingStopWatch();
+
     // close valve
     this->valve.Close();
 
@@ -204,6 +207,9 @@ void StateMachine::FillingPausedLoop()
 void StateMachine::ChangeStateFromFillingPausedToFilling()
 {
     Log.notice(msg_exiting, msg_filling_paused);
+
+    // start the filling stopwatch
+    this->resumeFillingStopWatch();
 
     // close valve
     this->valve.Open();
@@ -342,6 +348,16 @@ void StateMachine::resetBottle()
 {
     this->currentBottleType = UNKNOWN_BOTTLE;
     this->currentBottleWeight = 0.0;
+}
+
+void StateMachine::resumeFillingStopWatch()
+{
+    this->fillingStopWatch.start();
+}
+
+void StateMachine::pauseFillingStopWatch()
+{
+    this->fillingStopWatch.stop();
 }
 
 void StateMachine::restartFillingStopWatch()

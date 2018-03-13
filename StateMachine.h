@@ -53,6 +53,8 @@ private:
     long getFullWeight();
     void waitForButtonsToBeReleased();
     void resetBottle();
+    void resumeFillingStopWatch();
+    void pauseFillingStopWatch();
     void restartFillingStopWatch();
     void resetLoopCounter();
     void printReport(ScaleUpdate);
