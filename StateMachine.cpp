@@ -350,12 +350,6 @@ void StateMachine::restartFillingStopWatch()
     this->fillingStopWatch.start();
 }
 
-void StateMachine::restartUpdateStopWatch()
-{
-    this->updateStopWatch.reset();
-    this->updateStopWatch.start();
-}
-
 void StateMachine::resetLoopCounter()
 {
     this->loopCounter = 0;
