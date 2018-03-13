@@ -3,6 +3,13 @@
 #include "Arduino.h"
 #include "BottleType.h"
 
+const char msg_entering[] PROGMEM = "Entering %s state";
+const char msg_exiting[] PROGMEM = "Exiting %s state";
+const char msg_waiting[] PROGMEM = "waiting";
+const char msg_filling[] PROGMEM = "filling";
+const char msg_filling_paused[] PROGMEM = "filling paused";
+const char msg_filled[] PROGMEM = "filled";
+
 StateMachine::StateMachine()
 {
     this->CurrentState = StateMachine::State::Waiting;
@@ -71,7 +78,7 @@ void StateMachine::WaitingLoop()
 
 void StateMachine::ChangeStateFromWaitingToFilling(ScaleUpdate update, BottleType bottleType)
 {
-    Log.notice(F("Exiting waiting state"));
+    Log.notice(msg_exiting, msg_waiting);
 
     this->currentBottleType = bottleType;
     this->currentBottleWeight = update.Weight;
@@ -83,7 +90,7 @@ void StateMachine::ChangeStateFromWaitingToFilling(ScaleUpdate update, BottleTyp
     this->printReport(update);
 
     this->CurrentState = StateMachine::State::Filling;
-    Log.notice(F("Entering filling state"));
+    Log.notice(msg_entering, msg_filling);
 }
 
 void StateMachine::FillingLoop()
@@ -163,7 +170,7 @@ void StateMachine::FillingLoop()
 
 void StateMachine::ChangeStateFromFillingToFillingPaused()
 {
-    Log.notice(F("Exiting filling state"));
+    Log.notice(msg_exiting, msg_filling);
 
     // close valve
     this->valve.Close();
@@ -171,7 +178,7 @@ void StateMachine::ChangeStateFromFillingToFillingPaused()
     // wait for all buttons to be released
     this->waitForButtonsToBeReleased();
 
-    Log.notice(F("Entering filling paused state"));
+    Log.notice(msg_entering, msg_filling_paused);
     this->CurrentState = StateMachine::State::FillingPaused;
 }
 
@@ -196,12 +203,12 @@ void StateMachine::FillingPausedLoop()
 
 void StateMachine::ChangeStateFromFillingPausedToFilling()
 {
-    Log.notice(F("Exiting filling paused state"));
+    Log.notice(msg_exiting, msg_filling_paused);
 
     // close valve
     this->valve.Open();
 
-    Log.notice(F("Entering waiting state"));
+    Log.notice(msg_entering, msg_waiting);
     this->CurrentState = StateMachine::State::Waiting;
 }
 
@@ -210,7 +217,7 @@ void StateMachine::ChangeStateFromFillingPausedToFilling()
  */
 void StateMachine::ChangeStateFromFillingPausedToWaiting()
 {
-    Log.notice(F("Exiting filling paused state"));
+    Log.notice(msg_exiting, msg_filling_paused);
 
     // close valve
     this->valve.Close();
@@ -221,7 +228,7 @@ void StateMachine::ChangeStateFromFillingPausedToWaiting()
     // reset scale
     this->scale.Tare();
 
-    Log.notice(F("Entering waiting state"));
+    Log.notice(msg_entering, msg_waiting);
     this->CurrentState = StateMachine::State::Waiting;
 }
 
@@ -230,7 +237,7 @@ void StateMachine::ChangeStateFromFillingPausedToWaiting()
  */
 void StateMachine::ChangeStateFromFillingToWaiting()
 {
-    Log.notice(F("Exiting filling state"));
+    Log.notice(msg_exiting, msg_filling);
 
     // close valve
     this->valve.Close();
@@ -241,13 +248,13 @@ void StateMachine::ChangeStateFromFillingToWaiting()
     // reset scale
     this->scale.Tare();
 
-    Log.notice(F("Entering waiting state"));
+    Log.notice(msg_entering, msg_waiting);
     this->CurrentState = StateMachine::State::Waiting;
 }
 
 void StateMachine::ChangeStateFromFillingToFilled(ScaleUpdate update)
 {
-    Log.notice(F("Exiting filling state"));
+    Log.notice(msg_exiting, msg_filling);
 
     // close valve
     this->valve.Close();
@@ -258,7 +265,7 @@ void StateMachine::ChangeStateFromFillingToFilled(ScaleUpdate update)
     // print report as last because it takes some time
     this->printReport(update);
 
-    Log.notice(F("Entering filled state"));
+    Log.notice(msg_entering, msg_filled);
     this->CurrentState = StateMachine::State::Filled;
 }
 
@@ -288,7 +295,7 @@ void StateMachine::FilledLoop()
 
 void StateMachine::ChangeStateFromFilledToWaiting()
 {
-    Log.notice(F("Exiting filled state"));
+    Log.notice(msg_exiting, msg_filled);
 
     // close valve
     this->valve.Close();
@@ -296,7 +303,7 @@ void StateMachine::ChangeStateFromFilledToWaiting()
     // reset scale
     this->scale.Tare();
 
-    Log.notice(F("Entering waiting state"));
+    Log.notice(msg_entering, msg_waiting);
     this->CurrentState = StateMachine::State::Waiting;
 }
 
