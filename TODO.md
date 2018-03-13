@@ -41,6 +41,12 @@
   - lcd display = 100x60
   - arduino = 53x80
 
+- fillstation
+  - threaded rod (size?)
+  - layered enclosure (keyboards)
+    - min height = size jack mount
+  - measure holes load cell
+
 - connectors
   - circular din
   - gx16
@@ -53,6 +59,7 @@
   - female jack mountable
   - male jack for valve cable
   - 4 wire cable for weight sensor
+  - 6 wire cable for weight sensor + 12v
   - 2 wire cable for ??
   - 4 pin female connector mountable (project box)
   - 4 pin male connector cable (project box)
