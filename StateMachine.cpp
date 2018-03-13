@@ -419,6 +419,9 @@ void StateMachine::printReport(ScaleUpdate update)
             );
 }
 
+// The average fill rate can be calculated by getting the current weight minus
+// start weight of the bottle = weight added. And then dividing the added weight
+// by the time since filling started.
 long StateMachine::getAverageFillRate(ScaleUpdate update)
 {
     long weightDiff = update.Weight - this->currentBottleWeight;
@@ -426,6 +429,8 @@ long StateMachine::getAverageFillRate(ScaleUpdate update)
     return round(weightDiff/elapsed);
 }
 
+// Time between weight updates can be deducted because the number of loops is
+// fast enough to be always the same
 long StateMachine::getTimeBetweenWeightUpdates()
 {
     return this->scale.GetTimeBetweenWeightUpdates();
