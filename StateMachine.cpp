@@ -77,7 +77,7 @@ void StateMachine::ChangeStateFromWaitingToFilling(ScaleUpdate update, BottleTyp
 
     this->currentBottleType = bottleType;
     this->currentBottleWeight = update.Weight;
-    this->resetFillingStopWatch();
+    this->restartFillingStopWatch();
     this->resetLoopCounter();
     this->resetAverageFillRateAndTime();
     this->valve.Open();
@@ -129,7 +129,7 @@ void StateMachine::FillingLoop()
         // that amount, close valve, update weight and change to filled state
         // - Or work percentage based? Filled 90% -> 95%, 95% -98%, 99% ->100%?
         long fillRate = this->fillRate.getAverage();
-        if (fillRate > 0 && fillRate + update.Weight >= fullWeight) {
+        if (fillRate > 0 && fillRate + 400 + update.Weight >= fullWeight) {
             // bottle is filled before next update
             Log.notice("fillRate: %l", fillRate);
 
@@ -139,11 +139,23 @@ void StateMachine::FillingLoop()
             long neededWeight = fullWeight - update.Weight;
             Log.notice("neededWeight: %l", neededWeight);
 
+            if (neededWeight > 400) {
+                neededWeight = neededWeight - 400;
+            } else {
+                neededWeight = 0;
+            }
+
             float percentage = ((float)neededWeight / (float)fillRate);
             Log.notice("percentage: %F", percentage);
 
             unsigned long timeToFull = round(percentage * timeToUpdate);
             Log.notice("timeToFull: %l", timeToFull);
+
+            if (timeToFull > 20) {
+                timeToFull = timeToFull - 20;
+            } else {
+                timeToFull = 0;
+            }
 
             // Ope valve in case timeToFull was too short and this statement is
             // executed a second time
@@ -331,10 +343,16 @@ void StateMachine::resetBottle()
     this->currentBottleWeight = 0.0;
 }
 
-void StateMachine::resetFillingStopWatch()
+void StateMachine::restartFillingStopWatch()
 {
     this->fillingStopWatch.reset();
     this->fillingStopWatch.start();
+}
+
+void StateMachine::restartUpdateStopWatch()
+{
+    this->updateStopWatch.reset();
+    this->updateStopWatch.start();
 }
 
 void StateMachine::resetLoopCounter()
@@ -426,14 +444,8 @@ void StateMachine::updateAverageFillRate(ScaleUpdate update)
 
 void StateMachine::updateAverageTimeBetweenWeightUpdates()
 {
-    uint8_t i = this->timeBetweenWeightUpdates.getCount();
-    long timeDiff = this->fillingStopWatch.elapsed();
-    if (i > 0) {
-        // current value - last value
-        long lastElement = round(this->timeBetweenWeightUpdates.getElement(i - 1));
-        timeDiff = timeDiff - lastElement;
-    }
-
+    unsigned long timeDiff = this->updateStopWatch.elapsed();
+    this->restartUpdateStopWatch();
     this->timeBetweenWeightUpdates.add(timeDiff);
 }
 
