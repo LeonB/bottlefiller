@@ -16,9 +16,9 @@ const unsigned short int DEFAULT_BOTTLE_DEVIATION = 3000;
 const short int BAUD_RATE = 19200;
 
 // pin assignments
-const byte HX711_DOUT = A1;
-const byte HX711_SCK = A0;
-const byte VALVE_PIN = 2;
+const byte HX711_DOUT = 6; // blue, digital output
+const byte HX711_SCK = 7; // yellow, clock
+const byte VALVE_PIN = 8;
 const byte GREEN_BUTTON_PIN = 12;
 const byte RED_BUTTON_PIN = 13;
 
