@@ -1,5 +1,5 @@
 #include "BottleType.h"
-#include "ArduinoLog.h"
+#include "Logger.h"
 
 BottleType getBottleBasedOnWeight(long weight, BottleType bottleTypes[MAX_BOTTLE_TYPES])
 {

@@ -1,5 +1,5 @@
 #include "Scale.h"
-#include <ArduinoLog.h>
+#include "Logger.h"
 
 Scale::Scale():
     average(0)
@@ -16,7 +16,7 @@ Scale::Scale(byte pinDout, byte pinSck):
     // initialize the running median correctly
     this->average = RunningMedian(this->measurementsPerSecond);
 
-    Log.notice(F("Waiting for load cell to become ready"));
+    // logger.notice(F("Waiting for load cell to become ready"));
     while (!this->loadCell.is_ready()) {
         yield();
     }
@@ -27,28 +27,28 @@ Scale::Scale(byte pinDout, byte pinSck):
 
 void Scale::Tare()
 {
-    Log.notice(F("Tare"));
+    logger.notice(F("Tare"));
 
     // take enough readings to get a proper median
     ScaleUpdate update = this->Update();
     if (this->average.getCount() < this->average.getSize()) {
-        Log.notice(F("Filling average with samples"));
+        logger.notice(F("Filling average with samples"));
         while (this->average.getCount() < this->average.getSize()) {
             update = this->Update();
         }
     }
 
-    Log.notice(F("Waiting for readings to stabilise"));
+    // logger.notice(F("Waiting for readings to stabilise"));
     while (!update.WeightIsStable) {
         update = this->Update();
     }
 
     // readings have stabilised: set new offset
-    Log.notice(F("Readings have stabilised at %l"), update.StableWeight);
+    // logger.notice(F("New stable weight: %l"), update.StableWeight);
     this->SetOffset(update.StableWeight);
 
     // set initial median as default offset
-    Log.notice(F("Initial load cell offset: %l"), this->GetOffset());
+    logger.notice(F("Initial load cell offset: %l"), this->GetOffset());
 }
 
 ScaleUpdate Scale::Update()
