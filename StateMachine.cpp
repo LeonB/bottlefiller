@@ -1,17 +1,14 @@
-#include "Logger.h"
+#include "ArduinoLog.h"
 #include "StateMachine.h"
 #include "Arduino.h"
 #include "BottleType.h"
 
-const char msg_entering[] PROGMEM = "Entering %S %S";
-const char msg_exiting[] PROGMEM = "Exiting %S %S";
-const char msg_state[] PROGMEM = "state";
+const char msg_entering[] PROGMEM = "Entering %s state";
+const char msg_exiting[] PROGMEM = "Exiting %s state";
 const char msg_waiting[] PROGMEM = "waiting";
 const char msg_filling[] PROGMEM = "filling";
 const char msg_filling_paused[] PROGMEM = "filling paused";
 const char msg_filled[] PROGMEM = "filled";
-
-#define PGMT( pgm_ptr ) ( reinterpret_cast< const __FlashStringHelper * >( pgm_ptr ) )
 
 StateMachine::StateMachine()
 {
@@ -55,7 +52,7 @@ void StateMachine::Loop()
         this->MenuLoop();
         break;
     default:
-        logger.error(F("Unknown state"));
+        Log.error(F("Unknown state"));
         break;
     }
 }
@@ -81,7 +78,7 @@ void StateMachine::WaitingLoop()
 
 void StateMachine::ChangeStateFromWaitingToFilling(ScaleUpdate update, BottleType bottleType)
 {
-    logger.notice(PGMT(msg_exiting), msg_waiting, msg_state);
+    Log.notice(msg_exiting, msg_waiting);
 
     this->currentBottleType = bottleType;
     this->currentBottleWeight = update.Weight;
@@ -93,7 +90,7 @@ void StateMachine::ChangeStateFromWaitingToFilling(ScaleUpdate update, BottleTyp
     this->printReport(update);
 
     this->CurrentState = StateMachine::State::Filling;
-    logger.notice(PGMT(msg_entering), msg_filling, msg_state);
+    Log.notice(msg_entering, msg_filling);
 }
 
 void StateMachine::FillingLoop()
@@ -113,7 +110,7 @@ void StateMachine::FillingLoop()
     ScaleUpdate update = this->scale.Update();
 
     if (update.WeightIsRemoved) {
-        logger.notice(F("Weight is removed before bottle is filled"));
+        Log.notice(F("Weight is removed before bottle is filled"));
         return this->ChangeStateFromFillingToWaiting();
     }
 
@@ -135,13 +132,13 @@ void StateMachine::FillingLoop()
         long fillRate = this->getAverageFillRate(update);
         if (fillRate > 0 && fillRate + 400 + update.Weight >= fullWeight) {
             // bottle is filled before next update
-            logger.notice("fillRate: %l", fillRate);
+            Log.notice("fillRate: %l", fillRate);
 
             unsigned long timeToUpdate =  this->getTimeBetweenWeightUpdates();
-            logger.notice("timetoUpdate: %d", timeToUpdate);
+            Log.notice("timetoUpdate: %d", timeToUpdate);
 
             long neededWeight = fullWeight - update.Weight;
-            logger.notice("neededWeight: %l", neededWeight);
+            Log.notice("neededWeight: %l", neededWeight);
 
             if (neededWeight > 400) {
                 neededWeight = neededWeight - 400;
@@ -150,10 +147,10 @@ void StateMachine::FillingLoop()
             }
 
             float percentage = ((float)neededWeight / (float)fillRate);
-            logger.notice("percentage: %F", percentage);
+            Log.notice("percentage: %F", percentage);
 
             unsigned long timeToFull = round(percentage * timeToUpdate);
-            logger.notice("timeToFull: %l", timeToFull);
+            Log.notice("timeToFull: %l", timeToFull);
 
             if (timeToFull > 20) {
                 timeToFull = timeToFull - 20;
@@ -172,7 +169,7 @@ void StateMachine::FillingLoop()
 
 void StateMachine::ChangeStateFromFillingToFillingPaused()
 {
-    logger.notice(PGMT(msg_exiting), msg_filling, msg_state);
+    Log.notice(msg_exiting, msg_filling);
 
     // stop the filling stopwatch
     this->pauseFillingStopWatch();
@@ -183,7 +180,7 @@ void StateMachine::ChangeStateFromFillingToFillingPaused()
     // wait for all buttons to be released
     this->waitForButtonsToBeReleased();
 
-    logger.notice(PGMT(msg_entering), msg_filling_paused, msg_state);
+    Log.notice(msg_entering, msg_filling_paused);
     this->CurrentState = StateMachine::State::FillingPaused;
 }
 
@@ -208,7 +205,7 @@ void StateMachine::FillingPausedLoop()
 
 void StateMachine::ChangeStateFromFillingPausedToFilling()
 {
-    logger.notice(PGMT(msg_exiting), msg_filling_paused, msg_state);
+    Log.notice(msg_exiting, msg_filling_paused);
 
     // start the filling stopwatch
     this->resumeFillingStopWatch();
@@ -216,7 +213,7 @@ void StateMachine::ChangeStateFromFillingPausedToFilling()
     // close valve
     this->valve.Open();
 
-    logger.notice(PGMT(msg_entering), msg_waiting, msg_state);
+    Log.notice(msg_entering, msg_waiting);
     this->CurrentState = StateMachine::State::Waiting;
 }
 
@@ -225,7 +222,7 @@ void StateMachine::ChangeStateFromFillingPausedToFilling()
  */
 void StateMachine::ChangeStateFromFillingPausedToWaiting()
 {
-    logger.notice(PGMT(msg_exiting), msg_filling_paused, msg_state);
+    Log.notice(msg_exiting, msg_filling_paused);
 
     // close valve
     this->valve.Close();
@@ -236,7 +233,7 @@ void StateMachine::ChangeStateFromFillingPausedToWaiting()
     // reset scale
     this->scale.Tare();
 
-    logger.notice(PGMT(msg_entering), msg_waiting, msg_state);
+    Log.notice(msg_entering, msg_waiting);
     this->CurrentState = StateMachine::State::Waiting;
 }
 
@@ -245,7 +242,7 @@ void StateMachine::ChangeStateFromFillingPausedToWaiting()
  */
 void StateMachine::ChangeStateFromFillingToWaiting()
 {
-    logger.notice(PGMT(msg_exiting), msg_filling, msg_state);
+    Log.notice(msg_exiting, msg_filling);
 
     // close valve
     this->valve.Close();
@@ -256,13 +253,13 @@ void StateMachine::ChangeStateFromFillingToWaiting()
     // reset scale
     this->scale.Tare();
 
-    logger.notice(PGMT(msg_entering), msg_waiting, msg_state);
+    Log.notice(msg_entering, msg_waiting);
     this->CurrentState = StateMachine::State::Waiting;
 }
 
 void StateMachine::ChangeStateFromFillingToFilled(ScaleUpdate update)
 {
-    logger.notice(PGMT(msg_exiting), msg_filling, msg_state);
+    Log.notice(msg_exiting, msg_filling);
 
     // close valve
     this->valve.Close();
@@ -273,7 +270,7 @@ void StateMachine::ChangeStateFromFillingToFilled(ScaleUpdate update)
     // print report as last because it takes some time
     this->printReport(update);
 
-    logger.notice(PGMT(msg_entering), msg_filled, msg_state);
+    Log.notice(msg_entering, msg_filled);
     this->CurrentState = StateMachine::State::Filled;
 }
 
@@ -303,7 +300,7 @@ void StateMachine::FilledLoop()
 
 void StateMachine::ChangeStateFromFilledToWaiting()
 {
-    logger.notice(PGMT(msg_exiting), msg_filled, msg_state);
+    Log.notice(msg_exiting, msg_filled);
 
     // close valve
     this->valve.Close();
@@ -311,18 +308,18 @@ void StateMachine::ChangeStateFromFilledToWaiting()
     // reset scale
     this->scale.Tare();
 
-    logger.notice(PGMT(msg_entering), msg_waiting, msg_state);
+    Log.notice(msg_entering, msg_waiting);
     this->CurrentState = StateMachine::State::Waiting;
 }
 
 void StateMachine::CalibratingLoop()
 {
-    logger.notice(F("calibrating"));
+    Log.notice(F("calibrating"));
 }
 
 void StateMachine::MenuLoop()
 {
-    logger.notice(F("menu"));
+    Log.notice(F("menu"));
 }
 
 void StateMachine::updateButtons()
@@ -384,7 +381,7 @@ void StateMachine::printReport(ScaleUpdate update)
     // - scale offset
 
     long fullWeightDeviation = update.Weight - this->getFullWeight();
-    logger.notice(F("{"
+    Log.notice(F("{"
         "\"time\": %l,"
         "\"bottle_weight\": %l, "
         "\"full_weight\": %l, "

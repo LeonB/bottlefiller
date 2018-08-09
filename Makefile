@@ -9,7 +9,7 @@ ARDUINO_LIBS     = HX711 \
 				   Chrono \
 				   RunningMedian \
 				   MemoryFree \
-				   PrintEx-develop \
+				   Arduino-Log \
 				   MultiButton
 TAGS_FILE        = ctags
 CFLAGS          += -DSERIAL_TX_BUFFER_SIZE=16 \

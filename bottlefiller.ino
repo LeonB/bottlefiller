@@ -1,4 +1,4 @@
-#include "Logger.h"
+#include "ArduinoLog.h"
 #include "Scale.h"
 #include "Valve.h"
 #include "StateMachine.h"
@@ -24,6 +24,11 @@ const byte RED_BUTTON_PIN = 13;
 
 StateMachine stateMachine;
 
+void printNewline(Print* _logOutput)
+{
+    _logOutput->print("\r\n");
+}
+
 void initSerial()
 {
     Serial.begin(BAUD_RATE);
@@ -36,12 +41,13 @@ void initSerial()
 void initLogger()
 {
     // Initialize with log level and log output
-    /* logger.init(&Serial); */
+    Log.begin(LOG_LEVEL_VERBOSE, &Serial);
+    Log.setSuffix(printNewline);
 }
 
 Scale initScale()
 {
-    logger.notice(F("initScale"));
+    Log.notice(F("initScale"));
     Scale scale = Scale(HX711_DOUT, HX711_SCK);
     scale.SetMeasurementsPerSecond(SCALE_MEASUREMENTS_PER_SECOND);
     scale.SetMaxWeightDiffToBeStable(SCALE_MAX_WEIGHT_DIFF_TO_BE_STABLE);
@@ -51,7 +57,7 @@ Scale initScale()
 
 Valve initValve()
 {
-    logger.notice(F("initValve"));
+    Log.notice(F("initValve"));
     Valve valve = Valve(VALVE_PIN);
     return valve;
 }
@@ -75,7 +81,7 @@ void setup()
     Valve valve = initValve();
     initStateMachine(scale, valve);
 
-    logger.notice(F("free mem: %d"), getFreeMemory());
+    Log.notice(F("free mem: %d"), getFreeMemory());
 }
 
 void loop()
