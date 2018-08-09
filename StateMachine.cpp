@@ -166,7 +166,6 @@ void StateMachine::FillingLoop()
             this->valve.Open();
             delay(timeToFull);
             this->valve.Close();
-            Serial.println("closed");
         }
     }
 }
