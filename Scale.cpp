@@ -9,7 +9,7 @@ Scale::Scale():
 Scale::Scale(byte pinDout, byte pinSck):
     average(0)
 {
-    this->loadCell.begin(pinDout, pinSck);
+    this->loadCell.begin(pinDout, pinSck, 128); // more gain = more accurate
     this->loadCell.set_offset(0.0);
     this->chrono.start();
 
