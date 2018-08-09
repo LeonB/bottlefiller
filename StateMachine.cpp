@@ -64,7 +64,7 @@ void StateMachine::WaitingLoop()
 {
     ScaleUpdate update = this->scale.Update();
     if (update.WeightIsPlaced) {
-        BottleType bottleType = getBottleBasedOnWeight(update.Weight, this->bottleTypes);
+        BottleType bottleType = getBottleBasedOnWeight(update.StableWeight, this->bottleTypes);
 
         if (bottleType != UNKNOWN_BOTTLE) {
             return this->ChangeStateFromWaitingToFilling(update, bottleType);
